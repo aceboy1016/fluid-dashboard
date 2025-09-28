@@ -244,7 +244,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
             {/* Progress Overview */}
             <section className="space-y-4">
               <h2 className="text-2xl font-bold text-white">進捗概要</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <ProgressCard
                   title="全体進捗"
                   current={calculateCompletionRate()}
@@ -254,12 +254,38 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   color="cyan"
                 />
                 <ProgressCard
-                  title="SNS"
-                  current={typeof goals.sns.current === 'number' ? goals.sns.current : 0}
-                  target={typeof goals.sns.target === 'number' ? goals.sns.target : 0}
-                  unit={goals.sns.unit}
+                  title="note"
+                  current={typeof goals.note.current === 'number' ? goals.note.current : 0}
+                  target={typeof goals.note.target === 'number' ? goals.note.target : 0}
+                  unit={goals.note.unit}
                   trend={8}
+                  color="teal"
+                />
+                <ProgressCard
+                  title="standFM"
+                  current={typeof goals.standfm.current === 'number' ? goals.standfm.current : 0}
+                  target={typeof goals.standfm.target === 'number' ? goals.standfm.target : 0}
+                  unit={goals.standfm.unit}
+                  trend={12}
+                  color="orange"
+                />
+                <ProgressCard
+                  title="Instagram"
+                  current={typeof goals.instagram.current === 'number' ? goals.instagram.current : 0}
+                  target={typeof goals.instagram.target === 'number' ? goals.instagram.target : 0}
+                  unit={goals.instagram.unit}
+                  trend={5}
                   color="pink"
+                />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
+                <ProgressCard
+                  title="YouTube"
+                  current={typeof goals.youtube.current === 'number' ? goals.youtube.current : 0}
+                  target={typeof goals.youtube.target === 'number' ? goals.youtube.target : 0}
+                  unit={goals.youtube.unit}
+                  trend={15}
+                  color="red"
                 />
                 <ProgressCard
                   title="マーケティング"
@@ -283,7 +309,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   target={typeof goals.topform.target === 'number' ? goals.topform.target : 0}
                   unit={goals.topform.unit}
                   trend={3}
-                  color="orange"
+                  color="gray"
                 />
               </div>
             </section>
@@ -293,14 +319,44 @@ export const Dashboard: React.FC<DashboardProps> = () => {
               <h2 className="text-2xl font-bold text-white">タスク管理</h2>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <TaskCategory
-                  category="sns"
-                  categoryName="SNS"
-                  tasks={getTasksByCategory('sns')}
+                  category="note"
+                  categoryName="note"
+                  tasks={getTasksByCategory('note')}
                   onTaskToggle={handleTaskToggle}
                   onTaskUpdate={handleTaskUpdate}
                   onTaskAdd={() => setIsTaskModalOpen(true)}
                   onTaskMove={handleTaskMove}
-                  progress={calculateCategoryProgress('sns')}
+                  progress={calculateCategoryProgress('note')}
+                />
+                <TaskCategory
+                  category="standfm"
+                  categoryName="standFM"
+                  tasks={getTasksByCategory('standfm')}
+                  onTaskToggle={handleTaskToggle}
+                  onTaskUpdate={handleTaskUpdate}
+                  onTaskAdd={() => setIsTaskModalOpen(true)}
+                  onTaskMove={handleTaskMove}
+                  progress={calculateCategoryProgress('standfm')}
+                />
+                <TaskCategory
+                  category="instagram"
+                  categoryName="Instagram"
+                  tasks={getTasksByCategory('instagram')}
+                  onTaskToggle={handleTaskToggle}
+                  onTaskUpdate={handleTaskUpdate}
+                  onTaskAdd={() => setIsTaskModalOpen(true)}
+                  onTaskMove={handleTaskMove}
+                  progress={calculateCategoryProgress('instagram')}
+                />
+                <TaskCategory
+                  category="youtube"
+                  categoryName="YouTube"
+                  tasks={getTasksByCategory('youtube')}
+                  onTaskToggle={handleTaskToggle}
+                  onTaskUpdate={handleTaskUpdate}
+                  onTaskAdd={() => setIsTaskModalOpen(true)}
+                  onTaskMove={handleTaskMove}
+                  progress={calculateCategoryProgress('youtube')}
                 />
                 <TaskCategory
                   category="expertise"

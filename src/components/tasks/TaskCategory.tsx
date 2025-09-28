@@ -6,7 +6,7 @@ import type { Task } from '../../types';
 import clsx from 'clsx';
 
 interface TaskCategoryProps {
-  category: 'sns' | 'expertise' | 'marketing' | 'business' | 'topform';
+  category: 'note' | 'standfm' | 'instagram' | 'youtube' | 'expertise' | 'marketing' | 'business' | 'topform';
   categoryName: string;
   tasks: Task[];
   onTaskToggle: (taskId: number) => void;
@@ -17,12 +17,33 @@ interface TaskCategoryProps {
 }
 
 const categoryConfig = {
-  sns: {
-    icon: '📱',
+  note: {
+    icon: '📝',
+    color: 'teal',
+    gradient: 'from-teal-500/20 to-cyan-600/20',
+    border: 'border-teal-500/30',
+    accent: 'text-teal-400'
+  },
+  standfm: {
+    icon: '🎙️',
+    color: 'orange',
+    gradient: 'from-orange-500/20 to-red-600/20',
+    border: 'border-orange-500/30',
+    accent: 'text-orange-400'
+  },
+  instagram: {
+    icon: '📷',
     color: 'pink',
     gradient: 'from-pink-500/20 to-rose-600/20',
     border: 'border-pink-500/30',
     accent: 'text-pink-400'
+  },
+  youtube: {
+    icon: '📺',
+    color: 'red',
+    gradient: 'from-red-500/20 to-rose-600/20',
+    border: 'border-red-500/30',
+    accent: 'text-red-400'
   },
   expertise: {
     icon: '🎯',

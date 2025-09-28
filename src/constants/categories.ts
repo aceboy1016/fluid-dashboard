@@ -1,16 +1,55 @@
 import type { Category, Constants, CategoryGoals } from '../types';
 
 export const DEFAULT_CATEGORIES: Record<string, Category> = {
-  sns: {
-    id: 'sns',
-    name: 'SNS',
-    color: '#ff6b6b',
-    icon: '📱',
+  note: {
+    id: 'note',
+    name: 'note',
+    color: '#41C9B4',
+    icon: '📝',
+    goal: {
+      type: 'number',
+      target: 500,
+      current: 120,
+      unit: 'フォロワー'
+    },
+    editable: true
+  },
+  standfm: {
+    id: 'standfm',
+    name: 'standFM',
+    color: '#FF6B35',
+    icon: '🎙️',
+    goal: {
+      type: 'number',
+      target: 1000,
+      current: 245,
+      unit: 'フォロワー'
+    },
+    editable: true
+  },
+  instagram: {
+    id: 'instagram',
+    name: 'Instagram',
+    color: '#E4405F',
+    icon: '📷',
     goal: {
       type: 'number',
       target: 2000,
       current: 1850,
       unit: 'フォロワー'
+    },
+    editable: true
+  },
+  youtube: {
+    id: 'youtube',
+    name: 'YouTube',
+    color: '#FF0000',
+    icon: '📺',
+    goal: {
+      type: 'number',
+      target: 300,
+      current: 45,
+      unit: '登録者'
     },
     editable: true
   },
@@ -105,10 +144,28 @@ export const CONSTANTS: Constants = {
 };
 
 export const INITIAL_GOALS: CategoryGoals = {
-  sns: {
+  note: {
+    target: 500,
+    current: 120,
+    label: 'note フォロワー',
+    unit: '人'
+  },
+  standfm: {
+    target: 1000,
+    current: 245,
+    label: 'standFM フォロワー',
+    unit: '人'
+  },
+  instagram: {
     target: 2000,
     current: 1850,
     label: 'Instagram フォロワー',
+    unit: '人'
+  },
+  youtube: {
+    target: 300,
+    current: 45,
+    label: 'YouTube 登録者',
     unit: '人'
   },
   expertise: {
@@ -140,7 +197,7 @@ export const INITIAL_GOALS: CategoryGoals = {
 export const INITIAL_TASKS = [
   {
     id: 1,
-    category: 'sns' as const,
+    category: 'note' as const,
     title: 'note ブログ作成',
     priority: 'A' as const,
     energy: 'medium' as const,
@@ -153,7 +210,7 @@ export const INITIAL_TASKS = [
   },
   {
     id: 2,
-    category: 'sns' as const,
+    category: 'standfm' as const,
     title: 'standFM 撮影',
     priority: 'A' as const,
     energy: 'medium' as const,
@@ -445,7 +502,10 @@ export const COLOR_PALETTE = {
     hover: 'rgba(26, 26, 46, 0.95)'
   },
   category: {
-    sns: '#ff6b6b',
+    note: '#41C9B4',
+    standfm: '#FF6B35',
+    instagram: '#E4405F',
+    youtube: '#FF0000',
     expertise: '#4ecdc4',
     marketing: '#45b7d1',
     business: '#f9ca24',

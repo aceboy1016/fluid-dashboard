@@ -1,7 +1,7 @@
 // Task Management Types
 export interface Task {
   id: number;
-  category: 'sns' | 'expertise' | 'marketing' | 'business' | 'topform';
+  category: 'note' | 'standfm' | 'instagram' | 'youtube' | 'expertise' | 'marketing' | 'business' | 'topform';
   title: string;
   priority: 'S' | 'A' | 'B';
   energy: 'high' | 'medium' | 'low';
@@ -16,7 +16,10 @@ export interface Task {
 
 // Goal Management Types
 export interface CategoryGoals {
-  sns: CategoryGoal;
+  note: CategoryGoal;
+  standfm: CategoryGoal;
+  instagram: CategoryGoal;
+  youtube: CategoryGoal;
   expertise: CategoryGoal;
   marketing: CategoryGoal;
   business: CategoryGoal;
@@ -191,7 +194,7 @@ export interface TaskFilters {
 // Form Types
 export interface TaskFormData {
   title: string;
-  category: 'sns' | 'expertise' | 'marketing' | 'business' | 'topform';
+  category: 'note' | 'standfm' | 'instagram' | 'youtube' | 'expertise' | 'marketing' | 'business' | 'topform';
   priority: 'S' | 'A' | 'B';
   energy: 'high' | 'medium' | 'low';
   estimatedHours: number;

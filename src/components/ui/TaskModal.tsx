@@ -88,7 +88,10 @@ export const TaskModal: React.FC<TaskModalProps> = ({
               onChange={(e) => handleInputChange('category', e.target.value as TaskFormData['category'])}
               className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-cyan focus:border-transparent"
             >
-              <option value="sns">📱 SNS</option>
+              <option value="note">📝 note</option>
+              <option value="standfm">🎙️ standFM</option>
+              <option value="instagram">📷 Instagram</option>
+              <option value="youtube">📺 YouTube</option>
               <option value="expertise">🎯 専門性開発</option>
               <option value="marketing">📈 マーケティング</option>
               <option value="business">💼 ビジネス</option>

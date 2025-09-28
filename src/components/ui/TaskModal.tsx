@@ -17,7 +17,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
 }) => {
   const [formData, setFormData] = useState<TaskFormData>({
     title: '',
-    category: 'sns',
+    category: 'note',
     priority: 'B',
     energy: 'medium',
     estimatedHours: 1,
@@ -30,7 +30,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
       onSubmit(formData);
       setFormData({
         title: '',
-        category: 'sns',
+        category: 'note',
         priority: 'B',
         energy: 'medium',
         estimatedHours: 1,

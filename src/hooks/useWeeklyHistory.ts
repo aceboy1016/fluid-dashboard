@@ -93,7 +93,10 @@ export const createMetricsSnapshot = (tasks: Task[]): WeeklyMetricsSnapshot => {
   const completionRate = totalTasks === 0 ? 0 : Math.round((completedTasks.length / totalTasks) * 100);
 
   const categoryTotals = {
-    sns: 0,
+    note: 0,
+    standfm: 0,
+    instagram: 0,
+    youtube: 0,
     expertise: 0,
     marketing: 0,
     business: 0,
@@ -101,7 +104,10 @@ export const createMetricsSnapshot = (tasks: Task[]): WeeklyMetricsSnapshot => {
   } as WeeklyMetricsSnapshot['categoryProgress'];
 
   const categoryCompletedCounts = {
-    sns: 0,
+    note: 0,
+    standfm: 0,
+    instagram: 0,
+    youtube: 0,
     expertise: 0,
     marketing: 0,
     business: 0,
@@ -127,7 +133,10 @@ export const createMetricsSnapshot = (tasks: Task[]): WeeklyMetricsSnapshot => {
     acc[typedKey] = total === 0 ? 0 : Math.round((completed / total) * 100);
     return acc;
   }, {
-    sns: 0,
+    note: 0,
+    standfm: 0,
+    instagram: 0,
+    youtube: 0,
     expertise: 0,
     marketing: 0,
     business: 0,

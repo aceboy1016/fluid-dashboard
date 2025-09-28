@@ -8,7 +8,7 @@ interface ProgressCardProps {
   target: number;
   unit?: string;
   trend?: number;
-  color?: 'cyan' | 'green' | 'pink' | 'blue' | 'yellow' | 'orange';
+  color?: 'cyan' | 'green' | 'pink' | 'blue' | 'yellow' | 'orange' | 'teal' | 'red' | 'gray';
 }
 
 export const ProgressCard: React.FC<ProgressCardProps> = ({
@@ -85,6 +85,27 @@ export const ProgressCard: React.FC<ProgressCardProps> = ({
           border: 'border-orange-500/30',
           progress: 'bg-gradient-to-r from-orange-500 to-red-600',
           text: 'text-orange-400'
+        };
+      case 'teal':
+        return {
+          gradient: 'from-teal-500/20 to-cyan-600/20',
+          border: 'border-teal-500/30',
+          progress: 'bg-gradient-to-r from-teal-500 to-cyan-600',
+          text: 'text-teal-400'
+        };
+      case 'red':
+        return {
+          gradient: 'from-red-500/20 to-rose-600/20',
+          border: 'border-red-500/30',
+          progress: 'bg-gradient-to-r from-red-500 to-rose-600',
+          text: 'text-red-400'
+        };
+      case 'gray':
+        return {
+          gradient: 'from-gray-500/20 to-slate-600/20',
+          border: 'border-gray-500/30',
+          progress: 'bg-gradient-to-r from-gray-500 to-slate-600',
+          text: 'text-gray-400'
         };
       default:
         return {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Plus, ChevronDown, ChevronRight } from 'lucide-react';
 import { useDrop } from 'react-dnd';
 import { TaskItem } from './TaskItem';
@@ -67,6 +67,7 @@ export const TaskCategory: React.FC<TaskCategoryProps> = ({
   const [isCollapsed, setIsCollapsed] = useState(false);
   const config = categoryConfig[category];
 
+  const categoryRef = useRef<HTMLDivElement | null>(null);
   const [{ isOver }, drop] = useDrop({
     accept: 'task',
     drop: (item: { id: number; category: string }) => {
@@ -95,9 +96,11 @@ export const TaskCategory: React.FC<TaskCategoryProps> = ({
     return 'from-red-500 to-rose-600';
   };
 
+  drop(categoryRef);
+
   return (
     <div
-      ref={drop}
+      ref={categoryRef}
       className={clsx(
         'card',
         'bg-gradient-to-br', config.gradient,

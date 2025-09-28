@@ -493,6 +493,19 @@ export const INITIAL_TASKS = [
     notes: 'TOPFORM業務',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
+  },
+  {
+    id: 28,
+    category: 'topform' as const,
+    title: '予約早見表のリッチメニューサムネ作り',
+    priority: 'A' as const,
+    energy: 'medium' as const,
+    completed: false,
+    completedDate: null,
+    estimatedHours: 2,
+    notes: 'TOPFORM業務',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
   }
 ];
 

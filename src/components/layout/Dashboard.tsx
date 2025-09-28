@@ -181,7 +181,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   target={typeof goals.topform.target === 'number' ? goals.topform.target : 0}
                   unit={goals.topform.unit}
                   trend={3}
-                  color="red"
+                  color="orange"
                 />
               </div>
             </section>

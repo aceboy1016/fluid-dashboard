@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Check, Clock, Zap, Edit3, Trash2, MoreVertical, GripVertical } from 'lucide-react';
 import { useDrag } from 'react-dnd';
 import type { Task } from '../../types';
@@ -21,6 +21,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
+  const itemRef = useRef<HTMLDivElement | null>(null);
   const [{ isDragging }, drag] = useDrag({
     type: 'task',
     item: { id: task.id, category: task.category },
@@ -110,9 +111,11 @@ export const TaskItem: React.FC<TaskItemProps> = ({
     onUpdate(task.id, { actualHours: hours });
   };
 
+  drag(itemRef);
+
   return (
     <div
-      ref={drag}
+      ref={itemRef}
       className={clsx(
         'group relative',
         'bg-slate-800/50 border border-slate-700/50 rounded-lg',

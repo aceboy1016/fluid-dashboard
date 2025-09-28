@@ -52,6 +52,71 @@ export interface WeekData {
   updatedAt: string;
 }
 
+export type ReflectionMood = 'low' | 'neutral' | 'high';
+export type ReflectionEnergy = 'depleted' | 'balanced' | 'charged';
+
+export interface WeeklyReflectionInput {
+  wins: string;
+  challenges: string;
+  learnings: string;
+  mood: ReflectionMood;
+  energy: ReflectionEnergy;
+  focusNextWeek: string;
+  notes: string;
+}
+
+export interface WeeklyMetricsSnapshot {
+  completionRate: number;
+  totalTasks: number;
+  completedTasks: number;
+  highPriorityCompleted: number;
+  categoryProgress: Record<keyof CategoryGoals, number>;
+  energyDistribution: Record<'high' | 'medium' | 'low', number>;
+  priorityDistribution: Record<'S' | 'A' | 'B', number>;
+  createdAt: string;
+}
+
+export interface AIInsight {
+  summary: string;
+  focusAreas: string[];
+  recommendations: string[];
+  encouragement: string;
+  energyAdvice: string;
+  generatedAt: string;
+  engine: 'rule-based' | 'openai';
+}
+
+export interface AIInsightRequest {
+  profile: {
+    persona: 'INTJ' | 'INTP' | 'INFJ' | 'ENTJ' | 'custom';
+    tone: 'direct' | 'supportive' | 'balanced';
+  };
+  metrics: WeeklyMetricsSnapshot;
+  reflection: WeeklyReflectionInput;
+  tasks: Task[];
+}
+
+export interface WeekHistoryEntry {
+  id: string;
+  weekNumber: number;
+  year: number;
+  dateRange: string;
+  metrics: WeeklyMetricsSnapshot;
+  reflection: WeeklyReflectionInput;
+  aiInsight?: AIInsight;
+  createdAt: string;
+}
+
+export interface ReflectionProfile {
+  persona: 'INTJ' | 'INTP' | 'INFJ' | 'ENTJ' | 'custom';
+  customPersona?: string;
+  tone: 'direct' | 'supportive' | 'balanced';
+  openAIApiKey?: string;
+  preferredModel?: string;
+  allowRuleFallback?: boolean;
+  lastUpdated: string;
+}
+
 // Dynamic Category System
 export interface Category {
   id: string;

@@ -1,14 +1,26 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Header } from './Header';
 import { ProgressCard } from '../analytics/ProgressCard';
 import { AnalyticsCard } from '../analytics/AnalyticsCard';
 import { TaskCategory } from '../tasks/TaskCategory';
 import { TaskModal } from '../ui/TaskModal';
-import type { WeekData, Task, CategoryGoals, TaskFormData } from '../../types';
+import { ReflectionForm } from '../reflection/ReflectionForm';
+import { AIInsightPanel } from '../reflection/AIInsightPanel';
+import type {
+  AIInsight,
+  CategoryGoals,
+  Task,
+  TaskFormData,
+  WeekData,
+  WeekHistoryEntry,
+  WeeklyReflectionInput,
+} from '../../types';
 import { getCurrentWeekNumber, getWeekDateRange } from '../../utils/dateUtils';
 import { INITIAL_GOALS, INITIAL_TASKS } from '../../constants/categories';
 import { exportToJSON, downloadJSON } from '../../utils/exportUtils';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
+import { useWeeklyHistory, useReflectionProfile, createHistoryEntry } from '../../hooks/useWeeklyHistory';
+import { useAIInsights } from '../../hooks/useAIInsights';
 
 interface DashboardProps {
   // This will be populated with hooks later
@@ -23,6 +35,33 @@ export const Dashboard: React.FC<DashboardProps> = () => {
   const [goals] = useLocalStorage<CategoryGoals>('strategic-todo-goals', INITIAL_GOALS);
   const [tasks, setTasks] = useLocalStorage<Task[]>('strategic-todo-tasks', INITIAL_TASKS);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+  const { entries, upsertEntry, getEntry } = useWeeklyHistory();
+  const { profile } = useReflectionProfile();
+  const { generateInsight, isGenerating, error: aiError } = useAIInsights();
+
+  const defaultReflection: WeeklyReflectionInput = useMemo(
+    () => ({
+      wins: '',
+      challenges: '',
+      learnings: '',
+      mood: 'neutral',
+      energy: 'balanced',
+      focusNextWeek: '',
+      notes: '',
+    }),
+    []
+  );
+
+  const existingEntry = useMemo<WeekHistoryEntry | undefined>(
+    () => getEntry(currentWeek, new Date().getFullYear()),
+    [getEntry, currentWeek]
+  );
+
+  const [reflection, setReflection] = useState<WeeklyReflectionInput>(existingEntry?.reflection ?? defaultReflection);
+  const [currentInsight, setCurrentInsight] = useState<AIInsight | undefined>(existingEntry?.aiInsight);
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved' | 'error'>('idle');
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [lastSavedAt, setLastSavedAt] = useState<string | undefined>(existingEntry?.createdAt);
 
   // Sample week data for demonstration
   const weekData: WeekData = {
@@ -122,6 +161,69 @@ export const Dashboard: React.FC<DashboardProps> = () => {
     const categoryTasks = getTasksByCategory(category);
     if (categoryTasks.length === 0) return 0;
     return Math.round((categoryTasks.filter(task => task.completed).length / categoryTasks.length) * 100);
+  };
+
+  const handleReflectionChange = (updates: Partial<WeeklyReflectionInput>) => {
+    setReflection((prev) => ({ ...prev, ...updates }));
+    setSaveStatus('idle');
+  };
+
+  const handleSaveReflection = async () => {
+    try {
+      setSaveStatus('saving');
+      setSaveError(null);
+
+      const entry = createHistoryEntry({
+        weekNumber: currentWeek,
+        year: new Date().getFullYear(),
+        dateRange,
+        tasks,
+        reflection,
+        insight: currentInsight,
+        existingEntry,
+      });
+
+      upsertEntry(entry);
+      setLastSavedAt(entry.createdAt);
+      setSaveStatus('saved');
+    } catch (error) {
+      console.error('[Reflection] Failed to save history', error);
+      setSaveStatus('error');
+      setSaveError('振り返りの保存に失敗しました。再度お試しください。');
+    }
+  };
+
+  const handleGenerateInsight = async () => {
+    try {
+      const metricsEntry = createHistoryEntry({
+        weekNumber: currentWeek,
+        year: new Date().getFullYear(),
+        dateRange,
+        tasks,
+        reflection,
+        existingEntry,
+      });
+
+      const insight = await generateInsight({
+        profile,
+        metrics: metricsEntry.metrics,
+        reflection,
+        tasks,
+      });
+
+      setCurrentInsight(insight);
+      const entryWithInsight = {
+        ...metricsEntry,
+        aiInsight: insight,
+      };
+      upsertEntry(entryWithInsight);
+      setLastSavedAt(entryWithInsight.createdAt);
+      setSaveStatus('saved');
+    } catch (error) {
+      console.error('[AI] Insight generation failed', error);
+      setSaveStatus('error');
+      setSaveError(aiError || 'AI提案の生成に失敗しました。');
+    }
   };
 
   return (
@@ -242,6 +344,31 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                 />
               </div>
             </section>
+
+            <section className="space-y-6">
+              <ReflectionForm
+                value={reflection}
+                onChange={handleReflectionChange}
+                onSave={handleSaveReflection}
+                onGenerateInsight={handleGenerateInsight}
+                isSaving={saveStatus === 'saving'}
+                isGeneratingInsight={isGenerating}
+                lastSavedAt={lastSavedAt}
+              />
+
+              {saveStatus === 'error' && saveError && (
+                <div className="card border border-red-500/40 bg-red-500/10 text-red-200 px-4 py-3 text-sm">
+                  {saveError}
+                </div>
+              )}
+
+              <AIInsightPanel
+                insight={currentInsight}
+                error={aiError}
+                onRegenerate={handleGenerateInsight}
+                isGenerating={isGenerating}
+              />
+            </section>
           </div>
         )}
 
@@ -280,9 +407,71 @@ export const Dashboard: React.FC<DashboardProps> = () => {
         {currentView === 'history' && (
           <div className="space-y-8">
             <h2 className="text-2xl font-bold text-white">履歴</h2>
-            <div className="text-slate-400">
-              履歴機能は実装中です...
-            </div>
+            {entries.length === 0 ? (
+              <div className="card p-6 text-slate-400">
+                まだ履歴はありません。週次リフレクションを保存するとここに表示されます。
+              </div>
+            ) : (
+              <div className="grid gap-4">
+                {entries
+                  .slice()
+                  .reverse()
+                  .map((entry) => (
+                    <div key={entry.id} className="card card-hover p-5 space-y-4">
+                      <header className="flex items-center justify-between">
+                        <div>
+                          <h3 className="text-lg font-semibold text-white">
+                            第{entry.weekNumber}週 {entry.dateRange}
+                          </h3>
+                          <p className="text-xs text-slate-400">
+                            保存: {new Date(entry.createdAt).toLocaleString()}
+                          </p>
+                        </div>
+                        <div className="text-sm text-slate-300">
+                          完了率: <span className="text-primary-cyan font-semibold">{entry.metrics.completionRate}%</span>
+                        </div>
+                      </header>
+
+                      <div className="grid md:grid-cols-2 gap-4 text-sm text-slate-200">
+                        <div className="space-y-2">
+                          <h4 className="text-xs font-semibold uppercase text-primary-cyan">Wins</h4>
+                          <p className="leading-relaxed bg-slate-900/50 border border-slate-700/60 rounded-lg p-3">
+                            {entry.reflection.wins || '—'}
+                          </p>
+                          <h4 className="text-xs font-semibold uppercase text-primary-cyan">Challenges</h4>
+                          <p className="leading-relaxed bg-slate-900/50 border border-slate-700/60 rounded-lg p-3">
+                            {entry.reflection.challenges || '—'}
+                          </p>
+                        </div>
+                        <div className="space-y-2">
+                          <h4 className="text-xs font-semibold uppercase text-primary-cyan">Learnings</h4>
+                          <p className="leading-relaxed bg-slate-900/50 border border-slate-700/60 rounded-lg p-3">
+                            {entry.reflection.learnings || '—'}
+                          </p>
+                          <h4 className="text-xs font-semibold uppercase text-primary-cyan">Focus Next Week</h4>
+                          <p className="leading-relaxed bg-slate-900/50 border border-slate-700/60 rounded-lg p-3">
+                            {entry.reflection.focusNextWeek || '—'}
+                          </p>
+                        </div>
+                      </div>
+
+                      {entry.aiInsight && (
+                        <div className="border border-primary-green/30 bg-primary-green/10 rounded-lg p-4 text-sm text-slate-100">
+                          <div className="text-xs uppercase tracking-wide text-primary-green/80 mb-2">AI Insight</div>
+                          <div className="space-y-2">
+                            <p className="font-medium text-primary-cyan">{entry.aiInsight.summary}</p>
+                            <ul className="list-disc pl-5 space-y-1">
+                              {entry.aiInsight.recommendations.map((rec, index) => (
+                                <li key={index}>{rec}</li>
+                              ))}
+                            </ul>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+              </div>
+            )}
           </div>
         )}
       </main>

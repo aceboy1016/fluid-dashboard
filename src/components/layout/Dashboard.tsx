@@ -298,7 +298,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   color="blue"
                 />
                 <ProgressCard
-                  title="収益"
+                  title="ビジネス"
                   current={typeof goals.business.current === 'number' ? goals.business.current : 0}
                   target={typeof goals.business.target === 'number' ? goals.business.target : 0}
                   unit={goals.business.unit}

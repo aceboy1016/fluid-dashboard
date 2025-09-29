@@ -8,8 +8,8 @@ export const DEFAULT_CATEGORIES: Record<string, Category> = {
     icon: '📝',
     goal: {
       type: 'number',
-      target: 500,
-      current: 120,
+      target: 100,
+      current: 68,
       unit: 'フォロワー'
     },
     editable: true
@@ -21,8 +21,8 @@ export const DEFAULT_CATEGORIES: Record<string, Category> = {
     icon: '🎙️',
     goal: {
       type: 'number',
-      target: 1000,
-      current: 245,
+      target: 100,
+      current: 9,
       unit: 'フォロワー'
     },
     editable: true
@@ -34,8 +34,8 @@ export const DEFAULT_CATEGORIES: Record<string, Category> = {
     icon: '📷',
     goal: {
       type: 'number',
-      target: 2000,
-      current: 1850,
+      target: 300,
+      current: 288,
       unit: 'フォロワー'
     },
     editable: true
@@ -47,8 +47,8 @@ export const DEFAULT_CATEGORIES: Record<string, Category> = {
     icon: '📺',
     goal: {
       type: 'number',
-      target: 300,
-      current: 45,
+      target: 200,
+      current: 105,
       unit: '登録者'
     },
     editable: true
@@ -146,26 +146,26 @@ export const CONSTANTS: Constants = {
 
 export const INITIAL_GOALS: CategoryGoals = {
   note: {
-    target: 500,
-    current: 120,
+    target: 100,
+    current: 68,
     label: 'note フォロワー',
     unit: '人'
   },
   standfm: {
-    target: 1000,
-    current: 245,
+    target: 100,
+    current: 9,
     label: 'standFM フォロワー',
     unit: '人'
   },
   instagram: {
-    target: 2000,
-    current: 1850,
+    target: 300,
+    current: 288,
     label: 'Instagram フォロワー',
     unit: '人'
   },
   youtube: {
-    target: 300,
-    current: 45,
+    target: 200,
+    current: 105,
     label: 'YouTube 登録者',
     unit: '人'
   },

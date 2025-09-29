@@ -96,6 +96,8 @@ export const TaskModal: React.FC<TaskModalProps> = ({
               <option value="marketing">📈 マーケティング</option>
               <option value="business">💼 ビジネス</option>
               <option value="topform">🏢 TOPFORM</option>
+              <option value="private">🏠 プライベート</option>
+              <option value="other">📌 その他</option>
             </select>
           </div>
 

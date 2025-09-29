@@ -17,7 +17,7 @@ import type {
   WeekHistoryEntry,
   WeeklyReflectionInput,
 } from '../../types';
-import { getCurrentWeekNumber, getWeekDateRange } from '../../utils/dateUtils';
+import { getWeekDateRange } from '../../utils/dateUtils';
 import { INITIAL_GOALS, INITIAL_TASKS } from '../../constants/categories';
 import { exportToJSON, downloadJSON } from '../../utils/exportUtils';
 import { useLocalStorage } from '../../hooks/useLocalStorage';

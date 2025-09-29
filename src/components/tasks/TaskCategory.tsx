@@ -1,8 +1,9 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useMemo } from 'react';
 import { Plus, ChevronDown, ChevronRight } from 'lucide-react';
 import { useDrop } from 'react-dnd';
 import { TaskItem } from './TaskItem';
 import type { Task } from '../../types';
+import { sortTasksByCustomDateRange } from '../../utils/taskSorting';
 import clsx from 'clsx';
 
 interface TaskCategoryProps {
@@ -101,13 +102,21 @@ export const TaskCategory: React.FC<TaskCategoryProps> = ({
     }),
   });
 
-  const completedTasks = tasks.filter(task => task.completed).length;
-  const totalTasks = tasks.length;
+  // TOPFORMカテゴリーの場合は日付ベースでソート（22-28日を優先）
+  const sortedTasks = useMemo(() => {
+    if (category === 'topform') {
+      return sortTasksByCustomDateRange(tasks, 22, 28);
+    }
+    return tasks;
+  }, [tasks, category]);
+
+  const completedTasks = sortedTasks.filter(task => task.completed).length;
+  const totalTasks = sortedTasks.length;
 
   const priorityTasks = {
-    S: tasks.filter(task => task.priority === 'S'),
-    A: tasks.filter(task => task.priority === 'A'),
-    B: tasks.filter(task => task.priority === 'B')
+    S: sortedTasks.filter(task => task.priority === 'S'),
+    A: sortedTasks.filter(task => task.priority === 'A'),
+    B: sortedTasks.filter(task => task.priority === 'B')
   };
 
   const getProgressColor = () => {
@@ -245,7 +254,7 @@ export const TaskCategory: React.FC<TaskCategoryProps> = ({
       {/* Task List */}
       {!isCollapsed && (
         <div className="p-4 space-y-3">
-          {tasks.length === 0 ? (
+          {sortedTasks.length === 0 ? (
             <div className="text-center py-8 text-slate-400">
               <div className="text-4xl mb-2">📝</div>
               <p className="text-sm">タスクがありません</p>
@@ -253,35 +262,55 @@ export const TaskCategory: React.FC<TaskCategoryProps> = ({
             </div>
           ) : (
             <div className="space-y-2">
-              {/* Priority S Tasks */}
-              {priorityTasks.S.map(task => (
-                <TaskItem
-                  key={task.id}
-                  task={task}
-                  onToggle={onTaskToggle}
-                  onUpdate={onTaskUpdate}
-                />
-              ))}
+              {category === 'topform' ? (
+                // TOPFORMの場合：日付ベースでソート済みのタスクを表示
+                <>
+                  <div className="text-xs text-slate-400 mb-3 px-2">
+                    📅 22-28日のタスクを優先表示中
+                  </div>
+                  {sortedTasks.map(task => (
+                    <TaskItem
+                      key={task.id}
+                      task={task}
+                      onToggle={onTaskToggle}
+                      onUpdate={onTaskUpdate}
+                    />
+                  ))}
+                </>
+              ) : (
+                // その他のカテゴリー：従来通り優先度別に表示
+                <>
+                  {/* Priority S Tasks */}
+                  {priorityTasks.S.map(task => (
+                    <TaskItem
+                      key={task.id}
+                      task={task}
+                      onToggle={onTaskToggle}
+                      onUpdate={onTaskUpdate}
+                    />
+                  ))}
 
-              {/* Priority A Tasks */}
-              {priorityTasks.A.map(task => (
-                <TaskItem
-                  key={task.id}
-                  task={task}
-                  onToggle={onTaskToggle}
-                  onUpdate={onTaskUpdate}
-                />
-              ))}
+                  {/* Priority A Tasks */}
+                  {priorityTasks.A.map(task => (
+                    <TaskItem
+                      key={task.id}
+                      task={task}
+                      onToggle={onTaskToggle}
+                      onUpdate={onTaskUpdate}
+                    />
+                  ))}
 
-              {/* Priority B Tasks */}
-              {priorityTasks.B.map(task => (
-                <TaskItem
-                  key={task.id}
-                  task={task}
-                  onToggle={onTaskToggle}
-                  onUpdate={onTaskUpdate}
-                />
-              ))}
+                  {/* Priority B Tasks */}
+                  {priorityTasks.B.map(task => (
+                    <TaskItem
+                      key={task.id}
+                      task={task}
+                      onToggle={onTaskToggle}
+                      onUpdate={onTaskUpdate}
+                    />
+                  ))}
+                </>
+              )}
             </div>
           )}
         </div>

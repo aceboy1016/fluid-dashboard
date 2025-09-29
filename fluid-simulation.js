@@ -361,7 +361,15 @@
   let paletteIndex = 0;
 
   initFramebuffers();
-  multipleSplats(20);
+
+  // Ensure all programs are properly initialized before using them
+  setTimeout(() => {
+    try {
+      multipleSplats(20);
+    } catch(e) {
+      console.warn('Initial splat generation failed:', e);
+    }
+  }, 100);
 
   let lastUpdateTime = Date.now();
   let colorUpdateTimer = 0.0;
@@ -547,6 +555,10 @@
   }
 
   function splat(x, y, dx, dy, color) {
+    if (!splatProgram || !splatProgram.bind) {
+      console.warn('Splat program not initialized yet');
+      return;
+    }
     gl.viewport(0, 0, velocity.width, velocity.height);
     splatProgram.bind();
     gl.uniform1i(splatProgram.uniforms.uTarget, velocity.read.attach(0));

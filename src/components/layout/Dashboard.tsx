@@ -7,6 +7,7 @@ import { TaskModal } from '../ui/TaskModal';
 import { ReflectionForm } from '../reflection/ReflectionForm';
 import { AIInsightPanel } from '../reflection/AIInsightPanel';
 import { LongTermGoalsPanel } from '../goals/LongTermGoalsPanel';
+import { SNSGoalsEditor } from '../goals/SNSGoalsEditor';
 import type {
   AIInsight,
   CategoryGoals,
@@ -425,6 +426,11 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                 onRegenerate={handleGenerateInsight}
                 isGenerating={isGenerating}
               />
+            </section>
+
+            {/* SNS Goals Weekly Update */}
+            <section className="space-y-6">
+              <SNSGoalsEditor />
             </section>
 
             {/* Long-term Goals */}

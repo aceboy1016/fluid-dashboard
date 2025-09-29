@@ -134,6 +134,9 @@ export const Dashboard: React.FC<DashboardProps> = () => {
               ...task,
               completed: !task.completed,
               completedDate: !task.completed ? new Date().toISOString() : null,
+              readingStatus: task.category === 'reading'
+                ? (!task.completed ? 'completed' : 'reading')
+                : task.readingStatus,
               updatedAt: new Date().toISOString()
             }
           : task

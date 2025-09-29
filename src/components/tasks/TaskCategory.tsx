@@ -7,7 +7,7 @@ import { sortTasksByCustomDateRange } from '../../utils/taskSorting';
 import clsx from 'clsx';
 
 interface TaskCategoryProps {
-  category: 'note' | 'standfm' | 'instagram' | 'youtube' | 'expertise' | 'marketing' | 'business' | 'topform';
+  category: 'note' | 'standfm' | 'instagram' | 'youtube' | 'expertise' | 'marketing' | 'business' | 'topform' | 'private' | 'other';
   categoryName: string;
   tasks: Task[];
   onTaskToggle: (taskId: number) => void;
@@ -73,6 +73,20 @@ const categoryConfig = {
     gradient: 'from-red-500/20 to-rose-600/20',
     border: 'border-red-500/30',
     accent: 'text-red-400'
+  },
+  private: {
+    icon: '🏠',
+    color: 'purple',
+    gradient: 'from-purple-500/20 to-violet-600/20',
+    border: 'border-purple-500/30',
+    accent: 'text-purple-400'
+  },
+  other: {
+    icon: '📌',
+    color: 'gray',
+    gradient: 'from-gray-500/20 to-slate-600/20',
+    border: 'border-gray-500/30',
+    accent: 'text-gray-400'
   }
 };
 

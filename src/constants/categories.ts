@@ -104,6 +104,32 @@ export const DEFAULT_CATEGORIES: Record<string, Category> = {
       unit: '月次業務完了率（%）'
     },
     editable: true
+  },
+  private: {
+    id: 'private',
+    name: 'プライベート',
+    color: '#9b59b6',
+    icon: '🏠',
+    goal: {
+      type: 'percentage',
+      target: 100,
+      current: 75,
+      unit: '満足度（%）'
+    },
+    editable: true
+  },
+  other: {
+    id: 'other',
+    name: 'その他',
+    color: '#7f8c8d',
+    icon: '📌',
+    goal: {
+      type: 'number',
+      target: 5,
+      current: 3,
+      unit: '完了タスク'
+    },
+    editable: true
   }
 };
 
@@ -191,7 +217,7 @@ export const INITIAL_GOALS: CategoryGoals = {
     current: 85,
     label: 'TOPFORM月次業務',
     unit: '%'
-  }
+  },
 };
 
 // Real tasks
@@ -669,7 +695,9 @@ export const COLOR_PALETTE = {
     expertise: '#4ecdc4',
     marketing: '#45b7d1',
     business: '#f9ca24',
-    topform: '#e74c3c'
+    topform: '#e74c3c',
+    private: '#9b59b6',
+    other: '#7f8c8d'
   },
   priority: {
     S: '#ff4757',

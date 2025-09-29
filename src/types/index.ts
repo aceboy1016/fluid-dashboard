@@ -1,7 +1,7 @@
 // Task Management Types
 export interface Task {
   id: number;
-  category: 'note' | 'standfm' | 'instagram' | 'youtube' | 'expertise' | 'marketing' | 'business' | 'topform';
+  category: 'note' | 'standfm' | 'instagram' | 'youtube' | 'expertise' | 'marketing' | 'business' | 'topform' | 'private' | 'other';
   title: string;
   priority: 'S' | 'A' | 'B';
   energy: 'high' | 'medium' | 'low';
@@ -185,7 +185,7 @@ export interface UIState {
 }
 
 export interface TaskFilters {
-  category?: 'sns' | 'expertise' | 'marketing' | 'business' | 'topform';
+  category?: 'sns' | 'expertise' | 'marketing' | 'business' | 'topform' | 'private' | 'other';
   priority?: 'S' | 'A' | 'B';
   energy?: 'high' | 'medium' | 'low';
   completed?: boolean;
@@ -194,7 +194,7 @@ export interface TaskFilters {
 // Form Types
 export interface TaskFormData {
   title: string;
-  category: 'note' | 'standfm' | 'instagram' | 'youtube' | 'expertise' | 'marketing' | 'business' | 'topform';
+  category: 'note' | 'standfm' | 'instagram' | 'youtube' | 'expertise' | 'marketing' | 'business' | 'topform' | 'private' | 'other';
   priority: 'S' | 'A' | 'B';
   energy: 'high' | 'medium' | 'low';
   estimatedHours: number;

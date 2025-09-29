@@ -150,7 +150,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
     );
   };
 
-  const getTasksByCategory = (category: keyof CategoryGoals) => {
+  const getTasksByCategory = (category: keyof CategoryGoals | 'private' | 'other') => {
     return tasks.filter(task => task.category === category);
   };
 
@@ -159,7 +159,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
     return Math.round((tasks.filter(task => task.completed).length / tasks.length) * 100);
   };
 
-  const calculateCategoryProgress = (category: keyof CategoryGoals) => {
+  const calculateCategoryProgress = (category: keyof CategoryGoals | 'private' | 'other') => {
     const categoryTasks = getTasksByCategory(category);
     if (categoryTasks.length === 0) return 0;
     return Math.round((categoryTasks.filter(task => task.completed).length / categoryTasks.length) * 100);
@@ -399,6 +399,26 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   onTaskAdd={() => setIsTaskModalOpen(true)}
                   onTaskMove={handleTaskMove}
                   progress={calculateCategoryProgress('topform')}
+                />
+                <TaskCategory
+                  category="private"
+                  categoryName="プライベート"
+                  tasks={getTasksByCategory('private')}
+                  onTaskToggle={handleTaskToggle}
+                  onTaskUpdate={handleTaskUpdate}
+                  onTaskAdd={() => setIsTaskModalOpen(true)}
+                  onTaskMove={handleTaskMove}
+                  progress={calculateCategoryProgress('private')}
+                />
+                <TaskCategory
+                  category="other"
+                  categoryName="その他"
+                  tasks={getTasksByCategory('other')}
+                  onTaskToggle={handleTaskToggle}
+                  onTaskUpdate={handleTaskUpdate}
+                  onTaskAdd={() => setIsTaskModalOpen(true)}
+                  onTaskMove={handleTaskMove}
+                  progress={calculateCategoryProgress('other')}
                 />
               </div>
             </section>

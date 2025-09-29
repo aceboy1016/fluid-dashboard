@@ -98,8 +98,32 @@ export const Dashboard: React.FC<DashboardProps> = () => {
   };
 
   const handleImport = () => {
-    // Will implement file upload later
-    console.log('Import functionality will be implemented');
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = '.json';
+    input.onchange = (event) => {
+      const file = (event.target as HTMLInputElement).files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const jsonData = JSON.parse(e.target?.result as string);
+            if (jsonData.weekData?.[0]?.tasks) {
+              setTasks(jsonData.weekData[0].tasks);
+              console.log('Tasks imported successfully');
+            } else {
+              console.error('Invalid JSON format');
+              alert('無効なJSONファイル形式です');
+            }
+          } catch (error) {
+            console.error('JSON parse error:', error);
+            alert('JSONファイルの読み込みに失敗しました');
+          }
+        };
+        reader.readAsText(file);
+      }
+    };
+    input.click();
   };
 
   const handleTaskToggle = (taskId: number) => {

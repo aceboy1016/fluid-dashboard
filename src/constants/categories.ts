@@ -488,11 +488,11 @@ export const INITIAL_TASKS = [
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   },
-  // ビジネス基盤確立（8月）
+  // ビジネス基盤確立（9月）
   {
     id: 23,
     category: 'business' as const,
-    title: '【8月】税理士面談（3社比較）',
+    title: '【9月】税理士面談（3社比較）',
     priority: 'S' as const,
     energy: 'high' as const,
     completed: false,
@@ -505,7 +505,7 @@ export const INITIAL_TASKS = [
   {
     id: 24,
     category: 'business' as const,
-    title: '【8月】青色申告承認申請',
+    title: '【9月】青色申告承認申請',
     priority: 'S' as const,
     energy: 'medium' as const,
     completed: false,
@@ -518,7 +518,7 @@ export const INITIAL_TASKS = [
   {
     id: 25,
     category: 'business' as const,
-    title: '【8月】事業用口座開設（住信SBI）',
+    title: '【9月】事業用口座開設（住信SBI）',
     priority: 'A' as const,
     energy: 'medium' as const,
     completed: false,
@@ -531,7 +531,7 @@ export const INITIAL_TASKS = [
   {
     id: 26,
     category: 'business' as const,
-    title: '【8月】PL保険・業務災害保険加入',
+    title: '【9月】PL保険・業務災害保険加入',
     priority: 'A' as const,
     energy: 'medium' as const,
     completed: false,

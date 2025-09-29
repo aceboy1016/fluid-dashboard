@@ -4,6 +4,7 @@ import { useDrop } from 'react-dnd';
 import { TaskItem } from './TaskItem';
 import type { Task } from '../../types';
 import { sortTasksByCustomDateRange } from '../../utils/taskSorting';
+import { getWeekDates } from '../../utils/dateUtils';
 import clsx from 'clsx';
 
 interface TaskCategoryProps {
@@ -15,6 +16,7 @@ interface TaskCategoryProps {
   onTaskAdd?: () => void;
   onTaskMove?: (taskId: number, newCategory: string) => void;
   progress: number;
+  currentWeek?: number;
 }
 
 const categoryConfig = {
@@ -98,7 +100,8 @@ export const TaskCategory: React.FC<TaskCategoryProps> = ({
   onTaskUpdate,
   onTaskAdd,
   onTaskMove,
-  progress
+  progress,
+  currentWeek = 40
 }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const config = categoryConfig[category];
@@ -116,13 +119,18 @@ export const TaskCategory: React.FC<TaskCategoryProps> = ({
     }),
   });
 
-  // TOPFORMカテゴリーの場合は日付ベースでソート（22-28日を優先）
+  // TOPFORMカテゴリーの場合は週の日付範囲に基づいてソート
   const sortedTasks = useMemo(() => {
     if (category === 'topform') {
-      return sortTasksByCustomDateRange(tasks, 22, 28);
+      // 現在の週の日付を取得
+      const { start } = getWeekDates(currentWeek);
+      const startDay = start.getDate();
+      const endDay = Math.min(startDay + 6, 31); // 7日間、月末を超えない
+
+      return sortTasksByCustomDateRange(tasks, startDay, endDay);
     }
     return tasks;
-  }, [tasks, category]);
+  }, [tasks, category, currentWeek]);
 
   const completedTasks = sortedTasks.filter(task => task.completed).length;
   const totalTasks = sortedTasks.length;
@@ -280,7 +288,12 @@ export const TaskCategory: React.FC<TaskCategoryProps> = ({
                 // TOPFORMの場合：日付ベースでソート済みのタスクを表示
                 <>
                   <div className="text-xs text-slate-400 mb-3 px-2">
-                    📅 22-28日のタスクを優先表示中
+                    📅 {(() => {
+                      const { start } = getWeekDates(currentWeek);
+                      const startDay = start.getDate();
+                      const endDay = Math.min(startDay + 6, 31);
+                      return `${startDay}-${endDay}日のタスクを優先表示中`;
+                    })()}
                   </div>
                   {sortedTasks.map(task => (
                     <TaskItem

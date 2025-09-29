@@ -35,7 +35,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
   const [phase] = useState(1);
   const [currentView, setCurrentView] = useState<'dashboard' | 'analytics' | 'history'>('dashboard');
   const [goals] = useLocalStorage<CategoryGoals>('strategic-todo-goals', INITIAL_GOALS);
-  const [tasks, setTasks] = useLocalStorage<Task[]>(`strategic-todo-tasks-week${currentWeek}`, INITIAL_TASKS);
+  const [tasks, setTasks] = useState<Task[]>(INITIAL_TASKS);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const { entries, upsertEntry, getEntry } = useWeeklyHistory();
   const { profile } = useReflectionProfile();
@@ -173,6 +173,38 @@ export const Dashboard: React.FC<DashboardProps> = () => {
       )
     );
   };
+
+  // Load tasks for current week on mount and week change
+  React.useEffect(() => {
+    const weekKey = `strategic-todo-tasks-week${currentWeek}`;
+    let savedTasks = localStorage.getItem(weekKey);
+
+    // Migration: If week 39 data doesn't exist but v2 data exists, migrate it
+    if (!savedTasks && currentWeek === 39) {
+      const v2Tasks = localStorage.getItem('strategic-todo-tasks-v2');
+      if (v2Tasks) {
+        localStorage.setItem(weekKey, v2Tasks);
+        savedTasks = v2Tasks;
+      }
+    }
+
+    if (savedTasks) {
+      try {
+        setTasks(JSON.parse(savedTasks));
+      } catch (error) {
+        console.error('Failed to load tasks for week', currentWeek, error);
+        setTasks(INITIAL_TASKS);
+      }
+    } else {
+      setTasks(INITIAL_TASKS);
+    }
+  }, [currentWeek]);
+
+  // Save tasks to localStorage whenever tasks change
+  React.useEffect(() => {
+    const weekKey = `strategic-todo-tasks-week${currentWeek}`;
+    localStorage.setItem(weekKey, JSON.stringify(tasks));
+  }, [tasks, currentWeek]);
 
   const handleWeekChange = (weekNumber: number) => {
     setCurrentWeek(weekNumber);
@@ -359,6 +391,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   onTaskAdd={() => setIsTaskModalOpen(true)}
                   onTaskMove={handleTaskMove}
                   progress={calculateCategoryProgress('note')}
+                  currentWeek={currentWeek}
                 />
                 <TaskCategory
                   category="standfm"
@@ -369,6 +402,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   onTaskAdd={() => setIsTaskModalOpen(true)}
                   onTaskMove={handleTaskMove}
                   progress={calculateCategoryProgress('standfm')}
+                  currentWeek={currentWeek}
                 />
                 <TaskCategory
                   category="instagram"
@@ -379,6 +413,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   onTaskAdd={() => setIsTaskModalOpen(true)}
                   onTaskMove={handleTaskMove}
                   progress={calculateCategoryProgress('instagram')}
+                  currentWeek={currentWeek}
                 />
                 <TaskCategory
                   category="youtube"
@@ -389,6 +424,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   onTaskAdd={() => setIsTaskModalOpen(true)}
                   onTaskMove={handleTaskMove}
                   progress={calculateCategoryProgress('youtube')}
+                  currentWeek={currentWeek}
                 />
                 <TaskCategory
                   category="expertise"
@@ -399,6 +435,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   onTaskAdd={() => setIsTaskModalOpen(true)}
                   onTaskMove={handleTaskMove}
                   progress={calculateCategoryProgress('expertise')}
+                  currentWeek={currentWeek}
                 />
                 <TaskCategory
                   category="marketing"
@@ -409,6 +446,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   onTaskAdd={() => setIsTaskModalOpen(true)}
                   onTaskMove={handleTaskMove}
                   progress={calculateCategoryProgress('marketing')}
+                  currentWeek={currentWeek}
                 />
                 <TaskCategory
                   category="business"
@@ -419,6 +457,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   onTaskAdd={() => setIsTaskModalOpen(true)}
                   onTaskMove={handleTaskMove}
                   progress={calculateCategoryProgress('business')}
+                  currentWeek={currentWeek}
                 />
                 <TaskCategory
                   category="topform"
@@ -429,6 +468,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   onTaskAdd={() => setIsTaskModalOpen(true)}
                   onTaskMove={handleTaskMove}
                   progress={calculateCategoryProgress('topform')}
+                  currentWeek={currentWeek}
                 />
                 <TaskCategory
                   category="private"
@@ -439,6 +479,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   onTaskAdd={() => setIsTaskModalOpen(true)}
                   onTaskMove={handleTaskMove}
                   progress={calculateCategoryProgress('private')}
+                  currentWeek={currentWeek}
                 />
                 <TaskCategory
                   category="other"
@@ -449,6 +490,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   onTaskAdd={() => setIsTaskModalOpen(true)}
                   onTaskMove={handleTaskMove}
                   progress={calculateCategoryProgress('other')}
+                  currentWeek={currentWeek}
                 />
               </div>
             </section>

@@ -753,6 +753,59 @@ export const INITIAL_TASKS = [
     notes: 'HALLEL',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
+  },
+  // プライベートタスク
+  {
+    id: 41,
+    category: 'private' as const,
+    title: '結婚指輪',
+    priority: 'S' as const,
+    energy: 'medium' as const,
+    completed: false,
+    completedDate: null,
+    estimatedHours: 4,
+    notes: 'プライベート',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 42,
+    category: 'private' as const,
+    title: '結婚式',
+    priority: 'S' as const,
+    energy: 'high' as const,
+    completed: false,
+    completedDate: null,
+    estimatedHours: 20,
+    notes: 'プライベート',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 43,
+    category: 'private' as const,
+    title: '両家挨拶',
+    priority: 'S' as const,
+    energy: 'high' as const,
+    completed: false,
+    completedDate: null,
+    estimatedHours: 8,
+    notes: 'プライベート',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 44,
+    category: 'private' as const,
+    title: '引越し',
+    priority: 'A' as const,
+    energy: 'high' as const,
+    completed: false,
+    completedDate: null,
+    estimatedHours: 12,
+    notes: 'プライベート',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
   }
 ];
 

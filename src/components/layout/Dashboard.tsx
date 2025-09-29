@@ -30,12 +30,12 @@ interface DashboardProps {
 
 export const Dashboard: React.FC<DashboardProps> = () => {
   // Temporary state - will be replaced with custom hooks
-  const [currentWeek] = useState(40);
-  const [dateRange] = useState(getWeekDateRange(40));
+  const [currentWeek, setCurrentWeek] = useState(40);
+  const [dateRange, setDateRange] = useState(getWeekDateRange(40));
   const [phase] = useState(1);
   const [currentView, setCurrentView] = useState<'dashboard' | 'analytics' | 'history'>('dashboard');
   const [goals] = useLocalStorage<CategoryGoals>('strategic-todo-goals', INITIAL_GOALS);
-  const [tasks, setTasks] = useLocalStorage<Task[]>('strategic-todo-tasks-week40', INITIAL_TASKS);
+  const [tasks, setTasks] = useLocalStorage<Task[]>(`strategic-todo-tasks-week${currentWeek}`, INITIAL_TASKS);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const { entries, upsertEntry, getEntry } = useWeeklyHistory();
   const { profile } = useReflectionProfile();
@@ -174,6 +174,11 @@ export const Dashboard: React.FC<DashboardProps> = () => {
     );
   };
 
+  const handleWeekChange = (weekNumber: number) => {
+    setCurrentWeek(weekNumber);
+    setDateRange(getWeekDateRange(weekNumber));
+  };
+
   const getTasksByCategory = (category: keyof CategoryGoals | 'private' | 'other') => {
     return tasks.filter(task => task.category === category);
   };
@@ -262,6 +267,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
         currentView={currentView}
         onExport={handleExport}
         onImport={handleImport}
+        onWeekChange={handleWeekChange}
       />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

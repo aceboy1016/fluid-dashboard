@@ -92,7 +92,7 @@ export const createMetricsSnapshot = (tasks: Task[]): WeeklyMetricsSnapshot => {
   const totalTasks = tasks.length;
   const completionRate = totalTasks === 0 ? 0 : Math.round((completedTasks.length / totalTasks) * 100);
 
-  const categoryTotals = {
+  const categoryTotals: Record<string, number> = {
     note: 0,
     standfm: 0,
     instagram: 0,
@@ -101,9 +101,11 @@ export const createMetricsSnapshot = (tasks: Task[]): WeeklyMetricsSnapshot => {
     marketing: 0,
     business: 0,
     topform: 0,
-  } as WeeklyMetricsSnapshot['categoryProgress'];
+    private: 0,
+    other: 0,
+  };
 
-  const categoryCompletedCounts = {
+  const categoryCompletedCounts: Record<string, number> = {
     note: 0,
     standfm: 0,
     instagram: 0,
@@ -112,7 +114,9 @@ export const createMetricsSnapshot = (tasks: Task[]): WeeklyMetricsSnapshot => {
     marketing: 0,
     business: 0,
     topform: 0,
-  } as WeeklyMetricsSnapshot['categoryProgress'];
+    private: 0,
+    other: 0,
+  };
 
   const energyCounts = { high: 0, medium: 0, low: 0 } as WeeklyMetricsSnapshot['energyDistribution'];
   const priorityCounts = { S: 0, A: 0, B: 0 } as WeeklyMetricsSnapshot['priorityDistribution'];
@@ -126,13 +130,15 @@ export const createMetricsSnapshot = (tasks: Task[]): WeeklyMetricsSnapshot => {
     priorityCounts[task.priority] += 1;
   });
 
-  const categoryProgress = Object.keys(categoryTotals).reduce((acc, key) => {
-    const typedKey = key as keyof WeeklyMetricsSnapshot['categoryProgress'];
-    const total = categoryTotals[typedKey];
-    const completed = categoryCompletedCounts[typedKey];
-    acc[typedKey] = total === 0 ? 0 : Math.round((completed / total) * 100);
-    return acc;
-  }, {
+  const categoryProgress = Object.keys(categoryTotals)
+    .filter(key => !['private', 'other'].includes(key))
+    .reduce((acc, key) => {
+      const typedKey = key as keyof WeeklyMetricsSnapshot['categoryProgress'];
+      const total = categoryTotals[typedKey];
+      const completed = categoryCompletedCounts[typedKey];
+      acc[typedKey] = total === 0 ? 0 : Math.round((completed / total) * 100);
+      return acc;
+    }, {
     note: 0,
     standfm: 0,
     instagram: 0,

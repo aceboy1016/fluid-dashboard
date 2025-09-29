@@ -6,6 +6,7 @@ import { TaskCategory } from '../tasks/TaskCategory';
 import { TaskModal } from '../ui/TaskModal';
 import { ReflectionForm } from '../reflection/ReflectionForm';
 import { AIInsightPanel } from '../reflection/AIInsightPanel';
+import { LongTermGoalsPanel } from '../goals/LongTermGoalsPanel';
 import type {
   AIInsight,
   CategoryGoals,
@@ -424,6 +425,11 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                 onRegenerate={handleGenerateInsight}
                 isGenerating={isGenerating}
               />
+            </section>
+
+            {/* Long-term Goals */}
+            <section className="space-y-6">
+              <LongTermGoalsPanel />
             </section>
           </div>
         )}

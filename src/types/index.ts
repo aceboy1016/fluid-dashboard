@@ -260,6 +260,29 @@ export interface UseGoalsReturn {
   calculateProgress: (category: keyof CategoryGoals) => number;
 }
 
+// Long-term Goals Types
+export interface PhaseGoal {
+  id: string;
+  title: string;
+  target?: string;
+  description: string;
+  isAchieved: boolean;
+}
+
+export interface LongTermPhase {
+  id: string;
+  title: string;
+  period: string;
+  description: string;
+  goals: PhaseGoal[];
+  currentPhase: boolean;
+}
+
+export interface LongTermGoals {
+  phases: LongTermPhase[];
+  lastUpdated: string;
+}
+
 // Constants Types
 export interface Constants {
   CATEGORIES: Record<string, Category>;

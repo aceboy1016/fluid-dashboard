@@ -132,7 +132,8 @@ export const LOCAL_STORAGE_KEYS = {
   UI_STATE: 'ishihara-ui-state',
   ANALYTICS_CACHE: 'ishihara-analytics-cache',
   WEEKLY_HISTORY: 'ishihara-weekly-history',
-  REFLECTION_PROFILE: 'ishihara-reflection-profile'
+  REFLECTION_PROFILE: 'ishihara-reflection-profile',
+  LONG_TERM_GOALS: 'ishihara-long-term-goals'
 };
 
 export const CONSTANTS: Constants = {

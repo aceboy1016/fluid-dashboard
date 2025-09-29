@@ -211,7 +211,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
     setDateRange(getWeekDateRange(weekNumber));
   };
 
-  const getTasksByCategory = (category: keyof CategoryGoals | 'private' | 'other') => {
+  const getTasksByCategory = (category: keyof CategoryGoals | 'private' | 'other' | 'reading') => {
     return tasks.filter(task => task.category === category);
   };
 
@@ -220,7 +220,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
     return Math.round((tasks.filter(task => task.completed).length / tasks.length) * 100);
   };
 
-  const calculateCategoryProgress = (category: keyof CategoryGoals | 'private' | 'other') => {
+  const calculateCategoryProgress = (category: keyof CategoryGoals | 'private' | 'other' | 'reading') => {
     const categoryTasks = getTasksByCategory(category);
     if (categoryTasks.length === 0) return 0;
     return Math.round((categoryTasks.filter(task => task.completed).length / categoryTasks.length) * 100);
@@ -368,6 +368,16 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   color="yellow"
                 />
                 <ProgressCard
+                  title="読書"
+                  current={typeof goals.reading.current === 'number' ? goals.reading.current : 0}
+                  target={typeof goals.reading.target === 'number' ? goals.reading.target : 0}
+                  unit={goals.reading.unit}
+                  trend={8}
+                  color="pink"
+                />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
+                <ProgressCard
                   title="TOPFORM"
                   current={typeof goals.topform.current === 'number' ? goals.topform.current : 0}
                   target={typeof goals.topform.target === 'number' ? goals.topform.target : 0}
@@ -490,6 +500,17 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   onTaskAdd={() => setIsTaskModalOpen(true)}
                   onTaskMove={handleTaskMove}
                   progress={calculateCategoryProgress('other')}
+                  currentWeek={currentWeek}
+                />
+                <TaskCategory
+                  category="reading"
+                  categoryName="読書"
+                  tasks={getTasksByCategory('reading')}
+                  onTaskToggle={handleTaskToggle}
+                  onTaskUpdate={handleTaskUpdate}
+                  onTaskAdd={() => setIsTaskModalOpen(true)}
+                  onTaskMove={handleTaskMove}
+                  progress={calculateCategoryProgress('reading')}
                   currentWeek={currentWeek}
                 />
               </div>

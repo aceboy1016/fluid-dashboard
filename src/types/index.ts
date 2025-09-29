@@ -1,7 +1,7 @@
 // Task Management Types
 export interface Task {
   id: number;
-  category: 'note' | 'standfm' | 'instagram' | 'youtube' | 'expertise' | 'marketing' | 'business' | 'topform' | 'private' | 'other';
+  category: 'note' | 'standfm' | 'instagram' | 'youtube' | 'expertise' | 'marketing' | 'business' | 'topform' | 'private' | 'other' | 'reading';
   title: string;
   priority: 'S' | 'A' | 'B';
   energy: 'high' | 'medium' | 'low';
@@ -10,6 +10,7 @@ export interface Task {
   estimatedHours: number;
   actualHours?: number;
   notes?: string;
+  readingStatus?: 'reading' | 'completed'; // 読書専用の状態
   createdAt: string;
   updatedAt: string;
 }
@@ -24,6 +25,7 @@ export interface CategoryGoals {
   marketing: CategoryGoal;
   business: CategoryGoal;
   topform: CategoryGoal;
+  reading: CategoryGoal;
 }
 
 export interface CategoryGoal {
@@ -194,7 +196,7 @@ export interface TaskFilters {
 // Form Types
 export interface TaskFormData {
   title: string;
-  category: 'note' | 'standfm' | 'instagram' | 'youtube' | 'expertise' | 'marketing' | 'business' | 'topform' | 'private' | 'other';
+  category: 'note' | 'standfm' | 'instagram' | 'youtube' | 'expertise' | 'marketing' | 'business' | 'topform' | 'private' | 'other' | 'reading';
   priority: 'S' | 'A' | 'B';
   energy: 'high' | 'medium' | 'low';
   estimatedHours: number;

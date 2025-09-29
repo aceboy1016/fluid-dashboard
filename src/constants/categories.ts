@@ -130,6 +130,19 @@ export const DEFAULT_CATEGORIES: Record<string, Category> = {
       unit: '完了タスク'
     },
     editable: true
+  },
+  reading: {
+    id: 'reading',
+    name: '読書',
+    color: '#6c5ce7',
+    icon: '📚',
+    goal: {
+      type: 'number',
+      target: 5,
+      current: 2,
+      unit: '冊/月'
+    },
+    editable: true
   }
 };
 
@@ -217,6 +230,12 @@ export const INITIAL_GOALS: CategoryGoals = {
     current: 85,
     label: 'TOPFORM月次業務',
     unit: '%'
+  },
+  reading: {
+    target: 5,
+    current: 2,
+    label: '読書',
+    unit: '冊/月'
   },
 };
 
@@ -806,6 +825,49 @@ export const INITIAL_TASKS = [
     notes: 'プライベート',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
+  },
+  // 読書タスク
+  {
+    id: 45,
+    category: 'reading' as const,
+    title: '7つの習慣',
+    priority: 'B' as const,
+    energy: 'medium' as const,
+    completed: false,
+    completedDate: null,
+    estimatedHours: 10,
+    readingStatus: 'reading' as const,
+    notes: '自己啓発書',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 46,
+    category: 'reading' as const,
+    title: '人を動かす',
+    priority: 'A' as const,
+    energy: 'medium' as const,
+    completed: true,
+    completedDate: new Date().toISOString(),
+    estimatedHours: 8,
+    readingStatus: 'completed' as const,
+    notes: 'コミュニケーション',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 47,
+    category: 'reading' as const,
+    title: 'Think and Grow Rich',
+    priority: 'B' as const,
+    energy: 'low' as const,
+    completed: false,
+    completedDate: null,
+    estimatedHours: 12,
+    readingStatus: 'reading' as const,
+    notes: '成功哲学',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
   }
 ];
 
@@ -830,7 +892,8 @@ export const COLOR_PALETTE = {
     business: '#f9ca24',
     topform: '#e74c3c',
     private: '#9b59b6',
-    other: '#7f8c8d'
+    other: '#7f8c8d',
+    reading: '#6c5ce7'
   },
   priority: {
     S: '#ff4757',

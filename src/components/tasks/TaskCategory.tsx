@@ -8,7 +8,7 @@ import { getWeekDates } from '../../utils/dateUtils';
 import clsx from 'clsx';
 
 interface TaskCategoryProps {
-  category: 'note' | 'standfm' | 'instagram' | 'youtube' | 'expertise' | 'marketing' | 'business' | 'topform' | 'private' | 'other';
+  category: 'note' | 'standfm' | 'instagram' | 'youtube' | 'expertise' | 'marketing' | 'business' | 'topform' | 'private' | 'other' | 'reading';
   categoryName: string;
   tasks: Task[];
   onTaskToggle: (taskId: number) => void;
@@ -89,6 +89,13 @@ const categoryConfig = {
     gradient: 'from-gray-500/20 to-slate-600/20',
     border: 'border-gray-500/30',
     accent: 'text-gray-400'
+  },
+  reading: {
+    icon: '📚',
+    color: 'purple',
+    gradient: 'from-purple-500/20 to-violet-600/20',
+    border: 'border-purple-500/30',
+    accent: 'text-purple-400'
   }
 };
 
@@ -303,6 +310,39 @@ export const TaskCategory: React.FC<TaskCategoryProps> = ({
                       onUpdate={onTaskUpdate}
                     />
                   ))}
+                </>
+              ) : category === 'reading' ? (
+                // 読書の場合：読書中と読了に分けて表示
+                <>
+                  {/* 読書中セクション */}
+                  <div className="space-y-2">
+                    <div className="text-xs text-slate-400 mb-2 px-2 flex items-center gap-1">
+                      📖 読書中
+                    </div>
+                    {sortedTasks.filter(task => task.readingStatus === 'reading').map(task => (
+                      <TaskItem
+                        key={task.id}
+                        task={task}
+                        onToggle={onTaskToggle}
+                        onUpdate={onTaskUpdate}
+                      />
+                    ))}
+                  </div>
+
+                  {/* 読了セクション */}
+                  <div className="space-y-2 mt-4">
+                    <div className="text-xs text-slate-400 mb-2 px-2 flex items-center gap-1">
+                      ✅ 読了
+                    </div>
+                    {sortedTasks.filter(task => task.readingStatus === 'completed').map(task => (
+                      <TaskItem
+                        key={task.id}
+                        task={task}
+                        onToggle={onTaskToggle}
+                        onUpdate={onTaskUpdate}
+                      />
+                    ))}
+                  </div>
                 </>
               ) : (
                 // その他のカテゴリー：従来通り優先度別に表示

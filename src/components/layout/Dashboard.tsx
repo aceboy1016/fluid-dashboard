@@ -158,6 +158,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
       completed: false,
       completedDate: null,
       actualHours: 0,
+      readingStatus: taskData.category === 'reading' ? 'reading' : undefined,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };

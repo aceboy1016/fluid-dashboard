@@ -98,6 +98,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({
               <option value="topform">🏢 TOPFORM</option>
               <option value="private">🏠 プライベート</option>
               <option value="other">📌 その他</option>
+              <option value="reading">📚 読書</option>
             </select>
           </div>
 

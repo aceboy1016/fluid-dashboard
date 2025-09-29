@@ -8,6 +8,8 @@ import { ReflectionForm } from '../reflection/ReflectionForm';
 import { AIInsightPanel } from '../reflection/AIInsightPanel';
 import { LongTermGoalsPanel } from '../goals/LongTermGoalsPanel';
 import { SNSGoalsEditor } from '../goals/SNSGoalsEditor';
+import { WeeklyTimeline } from '../schedule/WeeklyTimeline';
+import { WeeklyCalendar } from '../schedule/WeeklyCalendar';
 import type {
   AIInsight,
   CategoryGoals,
@@ -388,6 +390,23 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   unit={goals.topform.unit}
                   trend={3}
                   color="gray"
+                />
+              </div>
+            </section>
+
+            {/* Weekly Schedule */}
+            <section className="space-y-6">
+              <h2 className="text-2xl font-bold text-white">週間スケジュール</h2>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <WeeklyTimeline
+                  tasks={tasks}
+                  currentWeek={currentWeek}
+                  onTaskToggle={handleTaskToggle}
+                />
+                <WeeklyCalendar
+                  tasks={tasks}
+                  currentWeek={currentWeek}
+                  onTaskToggle={handleTaskToggle}
                 />
               </div>
             </section>

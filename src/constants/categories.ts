@@ -673,6 +673,86 @@ export const INITIAL_TASKS = [
     notes: 'システム・最終準備',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
+  },
+  // 業務効率化タスク
+  {
+    id: 35,
+    category: 'topform' as const,
+    title: '月例資料の効率化',
+    priority: 'A' as const,
+    energy: 'medium' as const,
+    completed: false,
+    completedDate: null,
+    estimatedHours: 3,
+    notes: '業務の効率化',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 36,
+    category: 'topform' as const,
+    title: '月末処理の効率化',
+    priority: 'A' as const,
+    energy: 'medium' as const,
+    completed: false,
+    completedDate: null,
+    estimatedHours: 2.5,
+    notes: '業務の効率化',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 37,
+    category: 'topform' as const,
+    title: '入会手続きのオンライン化',
+    priority: 'S' as const,
+    energy: 'high' as const,
+    completed: false,
+    completedDate: null,
+    estimatedHours: 8,
+    notes: '業務の効率化',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 38,
+    category: 'topform' as const,
+    title: '恵比寿店の現金撤廃',
+    priority: 'A' as const,
+    energy: 'medium' as const,
+    completed: false,
+    completedDate: null,
+    estimatedHours: 4,
+    notes: '業務の効率化',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  {
+    id: 39,
+    category: 'topform' as const,
+    title: '予約候補送信システム',
+    priority: 'A' as const,
+    energy: 'high' as const,
+    completed: false,
+    completedDate: null,
+    estimatedHours: 6,
+    notes: '業務の効率化',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
+  },
+  // HALLELタスク
+  {
+    id: 40,
+    category: 'topform' as const,
+    title: '【HALLEL】半蔵門店の早見表作成',
+    priority: 'B' as const,
+    energy: 'medium' as const,
+    completed: false,
+    completedDate: null,
+    estimatedHours: 2,
+    notes: 'HALLEL',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
   }
 ];
 

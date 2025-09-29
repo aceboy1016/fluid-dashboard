@@ -7,6 +7,7 @@ import {
   formatDayOfWeek,
   getPriorityColor,
   getEnergyIcon,
+  shortenTaskTitle,
   type ScheduledTask
 } from '../../utils/scheduleUtils';
 import { getWeekDates } from '../../utils/dateUtils';
@@ -131,10 +132,10 @@ export const WeeklyTimeline: React.FC<WeeklyTimelineProps> = ({
                         {/* タスク情報 */}
                         <div className="flex-1 min-w-0">
                           <div className={clsx(
-                            'font-medium',
+                            'font-medium text-sm',
                             task.completed && 'line-through'
                           )}>
-                            {task.title.replace(/【毎月\d+日】/, '')}
+                            {shortenTaskTitle(task.title)}
                           </div>
                           <div className="flex items-center space-x-2 text-xs opacity-80 mt-1">
                             <span className="flex items-center space-x-1">

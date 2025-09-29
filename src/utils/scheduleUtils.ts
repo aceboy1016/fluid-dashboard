@@ -35,6 +35,22 @@ export function extractScheduleFromTitle(title: string): { day: number | null; i
 }
 
 /**
+ * タスクタイトルを短縮表示用に変換
+ */
+export function shortenTaskTitle(title: string): string {
+  // 【毎月X日】【場所】を削除
+  let shortened = title.replace(/【毎月\d+日】/g, '');
+  shortened = shortened.replace(/【[^】]*】/g, '');
+
+  // 長い場合は省略
+  if (shortened.length > 15) {
+    shortened = shortened.substring(0, 15) + '...';
+  }
+
+  return shortened.trim() || title;
+}
+
+/**
  * タスクリストからスケジュール付きタスクを抽出
  */
 export function extractScheduledTasks(

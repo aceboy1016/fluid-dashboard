@@ -5,6 +5,7 @@ import {
   getScheduledTasksForWeek,
   generateDateRange,
   formatDayOfWeek,
+  shortenTaskTitle,
   type ScheduledTask
 } from '../../utils/scheduleUtils';
 import { getWeekDates } from '../../utils/dateUtils';
@@ -110,38 +111,40 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                     </div>
                   )}
 
-                  {/* タスクドット */}
-                  <div className="flex flex-wrap gap-1">
-                    {dayTasks.slice(0, 3).map(task => (
+                  {/* タスク名表示（最大2つ） */}
+                  <div className="space-y-1">
+                    {dayTasks.slice(0, 2).map(task => (
                       <div
                         key={task.id}
                         className={clsx(
-                          'w-2 h-2 rounded-full border transition-all',
+                          'text-xs px-1 py-0.5 rounded border cursor-pointer transition-all',
                           task.completed
-                            ? 'bg-green-400 border-green-400'
+                            ? 'bg-green-400/20 border-green-400/40 text-green-300 line-through'
                             : task.priority === 'S'
-                              ? 'bg-red-400 border-red-400'
+                              ? 'bg-red-400/20 border-red-400/40 text-red-300'
                               : task.priority === 'A'
-                                ? 'bg-orange-400 border-orange-400'
-                                : 'bg-blue-400 border-blue-400'
+                                ? 'bg-orange-400/20 border-orange-400/40 text-orange-300'
+                                : 'bg-blue-400/20 border-blue-400/40 text-blue-300'
                         )}
                         title={task.title}
                         onClick={(e) => {
                           e.stopPropagation();
                           onTaskToggle(task.id);
                         }}
-                      />
+                      >
+                        {shortenTaskTitle(task.title).substring(0, 8)}
+                      </div>
                     ))}
-                    {dayTasks.length > 3 && (
-                      <div className="text-xs text-slate-400 ml-1">
-                        +{dayTasks.length - 3}
+                    {dayTasks.length > 2 && (
+                      <div className="text-xs text-slate-400 text-center">
+                        +{dayTasks.length - 2}件
                       </div>
                     )}
                   </div>
 
                   {/* 進捗バー */}
                   {metrics.total > 0 && (
-                    <div className="w-full bg-slate-700 rounded-full h-1 mt-2">
+                    <div className="w-full bg-slate-700 rounded-full h-1 mt-1">
                       <div
                         className="bg-green-400 h-1 rounded-full transition-all"
                         style={{

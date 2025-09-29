@@ -30,12 +30,12 @@ interface DashboardProps {
 
 export const Dashboard: React.FC<DashboardProps> = () => {
   // Temporary state - will be replaced with custom hooks
-  const [currentWeek] = useState(getCurrentWeekNumber());
-  const [dateRange] = useState(getWeekDateRange(currentWeek));
+  const [currentWeek] = useState(40);
+  const [dateRange] = useState(getWeekDateRange(40));
   const [phase] = useState(1);
   const [currentView, setCurrentView] = useState<'dashboard' | 'analytics' | 'history'>('dashboard');
   const [goals] = useLocalStorage<CategoryGoals>('strategic-todo-goals', INITIAL_GOALS);
-  const [tasks, setTasks] = useLocalStorage<Task[]>('strategic-todo-tasks-v2', INITIAL_TASKS);
+  const [tasks, setTasks] = useLocalStorage<Task[]>('strategic-todo-tasks-week40', INITIAL_TASKS);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const { entries, upsertEntry, getEntry } = useWeeklyHistory();
   const { profile } = useReflectionProfile();

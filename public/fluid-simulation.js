@@ -351,6 +351,15 @@
   let curl;
   let pressure;
 
+  // Color palette for fluid effects
+  const PALETTE = [
+    { h: 195 / 360, s: 0.95, v: 1.0 }, // neon cyan
+    { h: 308 / 360, s: 0.82, v: 1.0 }, // vibrant magenta
+    { h: 140 / 360, s: 0.72, v: 0.95 }, // laser lime
+    { h: 265 / 360, s: 0.78, v: 0.96 }  // deep violet
+  ];
+  let paletteIndex = 0;
+
   initFramebuffers();
   multipleSplats(20);
 
@@ -694,14 +703,6 @@
     }
     return delta;
   }
-
-  const PALETTE = [
-    { h: 195 / 360, s: 0.95, v: 1.0 }, // neon cyan
-    { h: 308 / 360, s: 0.82, v: 1.0 }, // vibrant magenta
-    { h: 140 / 360, s: 0.72, v: 0.95 }, // laser lime
-    { h: 265 / 360, s: 0.78, v: 0.96 }  // deep violet
-  ];
-  let paletteIndex = 0;
 
   function generateColor() {
     const pick = PALETTE[paletteIndex++ % PALETTE.length];

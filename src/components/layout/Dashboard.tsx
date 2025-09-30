@@ -164,6 +164,10 @@ export const Dashboard: React.FC<DashboardProps> = () => {
       completedDate: null,
       actualHours: 0,
       readingStatus: taskData.category === 'reading' ? 'reading' : undefined,
+      scheduledDate: taskData.scheduledDate || undefined,
+      isRecurring: taskData.isRecurring || false,
+      recurringType: taskData.recurringType || undefined,
+      recurringInterval: taskData.recurringInterval || undefined,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString()
     };

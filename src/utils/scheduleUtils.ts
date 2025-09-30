@@ -61,9 +61,31 @@ export function extractScheduledTasks(
   const scheduledTasks: ScheduledTask[] = [];
 
   for (const task of tasks) {
-    const schedule = extractScheduleFromTitle(task.title);
+    let scheduledDate: Date | null = null;
+    let scheduledDay: number | null = null;
+    let isMonthly = false;
+    let isFixed = false;
 
-    if (schedule.day && schedule.isMonthly) {
+    // 新しいscheduledDateフィールドを優先
+    if (task.scheduledDate) {
+      const taskDate = new Date(task.scheduledDate);
+      scheduledDate = taskDate;
+      scheduledDay = taskDate.getDate();
+      isFixed = true;
+      // 繰り返しタスクかどうかをチェック
+      isMonthly = (task.isRecurring === true) && (task.recurringType === 'monthly');
+    } else {
+      // フォールバック：タイトルから日付を抽出
+      const schedule = extractScheduleFromTitle(task.title);
+      if (schedule.day && schedule.isMonthly) {
+        scheduledDate = new Date(year, month - 1, schedule.day);
+        scheduledDay = schedule.day;
+        isMonthly = true;
+        isFixed = true;
+      }
+    }
+
+    if (scheduledDate && scheduledDay) {
       scheduledTasks.push({
         id: task.id,
         title: task.title,
@@ -72,10 +94,10 @@ export function extractScheduledTasks(
         energy: task.energy,
         completed: task.completed,
         estimatedHours: task.estimatedHours,
-        scheduledDate: new Date(year, month - 1, schedule.day),
-        scheduledDay: schedule.day,
-        isMonthly: true,
-        isFixed: true,
+        scheduledDate,
+        scheduledDay,
+        isMonthly,
+        isFixed,
         notes: task.notes
       });
     }

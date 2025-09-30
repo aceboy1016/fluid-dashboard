@@ -11,6 +11,10 @@ export interface Task {
   actualHours?: number;
   notes?: string;
   readingStatus?: 'reading' | 'completed'; // 読書専用の状態
+  scheduledDate?: string; // 予定日（YYYY-MM-DD形式）
+  isRecurring?: boolean; // 繰り返しタスクかどうか
+  recurringType?: 'daily' | 'weekly' | 'monthly' | 'yearly'; // 繰り返しタイプ
+  recurringInterval?: number; // 繰り返し間隔（例：2週間おき）
   createdAt: string;
   updatedAt: string;
 }
@@ -201,6 +205,10 @@ export interface TaskFormData {
   energy: 'high' | 'medium' | 'low';
   estimatedHours: number;
   notes?: string;
+  scheduledDate?: string;
+  isRecurring?: boolean;
+  recurringType?: 'daily' | 'weekly' | 'monthly' | 'yearly';
+  recurringInterval?: number;
 }
 
 export interface GoalFormData {

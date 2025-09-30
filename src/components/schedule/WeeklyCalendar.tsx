@@ -111,9 +111,9 @@ export const WeeklyCalendar: React.FC<WeeklyCalendarProps> = ({
                     </div>
                   )}
 
-                  {/* タスク名表示（最大2つ） */}
+                  {/* タスク名表示（全て） */}
                   <div className="space-y-1">
-                    {dayTasks.slice(0, 2).map(task => (
+                    {dayTasks.map(task => (
                       <div
                         key={task.id}
                         className={clsx(

@@ -41,11 +41,13 @@ export const Dashboard: React.FC<DashboardProps> = () => {
 
   // 毎月のタスクの日付を動的に更新する関数
   const updateMonthlyTaskDates = (tasks: Task[]): Task[] => {
-    const now = new Date();
-    const currentYear = now.getFullYear();
-    const currentMonth = now.getMonth() + 1;
+    // 現在の週の日付範囲を取得
+    const [weekStart, weekEnd] = dateRange.split(' - ').map(date => {
+      const [month, day] = date.split('/').map(Number);
+      return new Date(2025, month - 1, day);
+    });
 
-    console.log('updateMonthlyTaskDates called with current date:', `${currentYear}-${currentMonth}`);
+    console.log('updateMonthlyTaskDates called with week range:', weekStart, 'to', weekEnd);
 
     return tasks.map(task => {
       // 【毎月X日】パターンのタスクまたはisRecurring=trueでrecurringType=monthlyのタスクを対象
@@ -67,8 +69,25 @@ export const Dashboard: React.FC<DashboardProps> = () => {
           return task;
         }
 
-        // 現在の年月で新しい日付を生成
-        const newDate = `${currentYear}-${currentMonth.toString().padStart(2, '0')}-${targetDay.toString().padStart(2, '0')}`;
+        // 週の範囲に含まれる適切な月の日付を計算
+        let targetDate: Date;
+
+        // 週の開始月で試す
+        const startMonthDate = new Date(weekStart.getFullYear(), weekStart.getMonth(), targetDay);
+        // 週の終了月で試す
+        const endMonthDate = new Date(weekEnd.getFullYear(), weekEnd.getMonth(), targetDay);
+
+        if (startMonthDate >= weekStart && startMonthDate <= weekEnd) {
+          targetDate = startMonthDate;
+        } else if (endMonthDate >= weekStart && endMonthDate <= weekEnd) {
+          targetDate = endMonthDate;
+        } else {
+          // どちらの月の日付も週の範囲に含まれない場合は、現在の月を使用
+          const now = new Date();
+          targetDate = new Date(now.getFullYear(), now.getMonth(), targetDay);
+        }
+
+        const newDate = `${targetDate.getFullYear()}-${(targetDate.getMonth() + 1).toString().padStart(2, '0')}-${targetDay.toString().padStart(2, '0')}`;
         console.log(`Updating task "${task.title}" date from ${task.scheduledDate} to ${newDate}`);
 
         return {

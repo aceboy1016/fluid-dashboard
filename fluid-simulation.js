@@ -514,6 +514,11 @@
   }
 
   function render(target) {
+    // Ensure render programs are initialized
+    if (!colorProgram || !colorProgram.bind || !displayProgram || !displayProgram.bind) {
+      return;
+    }
+
     if (target === null || !CONFIG.TRANSPARENT) {
       gl.disable(gl.BLEND);
     }

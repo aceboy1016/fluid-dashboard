@@ -305,7 +305,7 @@ export function generateInitialTasks() {
     completedDate: null,
     estimatedHours: 2,
     notes: 'TOPFORM業務',
-    scheduledDate: generateMonthlyTaskDate(1),
+    scheduledDate: '2025-10-01',
     isRecurring: true,
     recurringType: 'monthly' as const,
     recurringInterval: 1,

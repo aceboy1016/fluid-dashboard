@@ -1,10 +1,10 @@
 import type { Category, Constants, CategoryGoals } from '../types';
 
 // 動的な月次タスクの日付を生成する関数
+// 月次繰り返しタスクの基準日として9月を使用（10月に繰り返し表示されるため）
 function generateMonthlyTaskDate(day: number): string {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth() + 1; // getMonth()は0ベースなので+1
+  const year = 2025;
+  const month = 9; // 9月を基準月とする
   return `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
 }
 
@@ -305,7 +305,7 @@ export function generateInitialTasks() {
     completedDate: null,
     estimatedHours: 2,
     notes: 'TOPFORM業務',
-    scheduledDate: '2025-10-01',
+    scheduledDate: generateMonthlyTaskDate(1),
     isRecurring: true,
     recurringType: 'monthly' as const,
     recurringInterval: 1,

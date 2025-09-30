@@ -207,52 +207,29 @@ export const TaskModal: React.FC<TaskModalProps> = ({
           </div>
 
           {/* 繰り返し設定 */}
-          <div className="space-y-3">
-            <div className="flex items-center space-x-2">
-              <input
-                type="checkbox"
-                id="isRecurring"
-                checked={formData.isRecurring}
-                onChange={(e) => handleInputChange('isRecurring', e.target.checked)}
-                className="w-4 h-4 text-primary-cyan bg-slate-700 border-slate-600 rounded focus:ring-primary-cyan"
-              />
-              <label htmlFor="isRecurring" className="text-sm font-medium text-slate-300">
-                繰り返しタスク
-              </label>
-            </div>
-
-            {formData.isRecurring && (
-              <div className="grid grid-cols-2 gap-3 pl-6">
-                <div>
-                  <label className="block text-xs font-medium text-slate-400 mb-1">
-                    間隔
-                  </label>
-                  <input
-                    type="number"
-                    min="1"
-                    max="30"
-                    value={formData.recurringInterval}
-                    onChange={(e) => handleInputChange('recurringInterval', parseInt(e.target.value))}
-                    className="w-full px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-sm focus:outline-none focus:ring-1 focus:ring-primary-cyan"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-slate-400 mb-1">
-                    単位
-                  </label>
-                  <select
-                    value={formData.recurringType || 'weekly'}
-                    onChange={(e) => handleInputChange('recurringType', e.target.value)}
-                    className="w-full px-2 py-1 bg-slate-700 border border-slate-600 rounded text-white text-sm focus:outline-none focus:ring-1 focus:ring-primary-cyan"
-                  >
-                    <option value="daily">日</option>
-                    <option value="weekly">週</option>
-                    <option value="monthly">月</option>
-                    <option value="yearly">年</option>
-                  </select>
-                </div>
-              </div>
-            )}
+          <div>
+            <label className="block text-sm font-medium text-slate-300 mb-2">
+              繰り返し
+            </label>
+            <select
+              value={formData.isRecurring ? `${formData.recurringType}` : 'none'}
+              onChange={(e) => {
+                if (e.target.value === 'none') {
+                  handleInputChange('isRecurring', false);
+                } else {
+                  handleInputChange('isRecurring', true);
+                  handleInputChange('recurringType', e.target.value);
+                  handleInputChange('recurringInterval', 1);
+                }
+              }}
+              className="w-full px-3 py-2 bg-slate-700 border border-slate-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-primary-cyan focus:border-transparent"
+            >
+              <option value="none">📅 その日だけ</option>
+              <option value="daily">🔄 毎日</option>
+              <option value="weekly">📅 毎週</option>
+              <option value="monthly">📆 毎月</option>
+              <option value="yearly">🗓️ 毎年</option>
+            </select>
           </div>
 
           {/* メモ */}

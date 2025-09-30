@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Check, Clock, Zap, Edit3, Trash2, MoreVertical, GripVertical } from 'lucide-react';
+import { Check, Clock, Zap, Edit3, Trash2, MoreVertical, GripVertical, Repeat, Calendar } from 'lucide-react';
 import { useDrag } from 'react-dnd';
 import type { Task } from '../../types';
 import clsx from 'clsx';
@@ -184,6 +184,25 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                     <Clock className="h-3 w-3 mr-1" />
                     {task.estimatedHours}h予定
                   </span>
+
+                  {/* 予定日バッジ */}
+                  {task.scheduledDate && (
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-500/10 border border-blue-500/30 text-blue-400">
+                      <Calendar className="h-3 w-3 mr-1" />
+                      {new Date(task.scheduledDate).toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric' })}
+                    </span>
+                  )}
+
+                  {/* 繰り返しバッジ */}
+                  {task.isRecurring && task.recurringType && (
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-purple-500/10 border border-purple-500/30 text-purple-400">
+                      <Repeat className="h-3 w-3 mr-1" />
+                      {task.recurringType === 'daily' && '毎日'}
+                      {task.recurringType === 'weekly' && '毎週'}
+                      {task.recurringType === 'monthly' && '毎月'}
+                      {task.recurringType === 'yearly' && '毎年'}
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -228,6 +247,33 @@ export const TaskItem: React.FC<TaskItemProps> = ({
                     <div>
                       <label className="text-xs font-medium text-slate-400">メモ</label>
                       <p className="text-sm text-slate-300 mt-1">{task.notes}</p>
+                    </div>
+                  )}
+
+                  {/* Schedule Info */}
+                  {(task.scheduledDate || task.isRecurring) && (
+                    <div className="grid grid-cols-2 gap-4">
+                      {task.scheduledDate && (
+                        <div>
+                          <label className="text-xs font-medium text-slate-400">予定日</label>
+                          <p className="text-sm text-slate-300 mt-1">
+                            {new Date(task.scheduledDate).toLocaleDateString('ja-JP')}
+                          </p>
+                        </div>
+                      )}
+
+                      {task.isRecurring && task.recurringType && (
+                        <div>
+                          <label className="text-xs font-medium text-slate-400">繰り返し</label>
+                          <p className="text-sm text-slate-300 mt-1">
+                            {task.recurringInterval || 1}
+                            {task.recurringType === 'daily' && '日ごと'}
+                            {task.recurringType === 'weekly' && '週間ごと'}
+                            {task.recurringType === 'monthly' && 'か月ごと'}
+                            {task.recurringType === 'yearly' && '年ごと'}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   )}
 

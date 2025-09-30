@@ -47,55 +47,179 @@ export function shortenTaskTitle(title: string): string {
 }
 
 /**
- * タスクリストからスケジュール付きタスクを抽出
+ * 繰り返しタスクの次回実行日を計算
+ * @param baseDate 繰り返しの基準日
+ * @param recurringType 繰り返しの種類
+ * @param interval 繰り返しの間隔
+ * @param targetDate チェック対象の日付
+ * @returns targetDateが有効な発生日であればそのDateオブジェクト、そうでなければnull
+ */
+function calculateNextOccurrence(
+  baseDate: Date,
+  recurringType: 'daily' | 'weekly' | 'monthly' | 'yearly',
+  interval: number,
+  targetDate: Date
+): Date | null {
+  const base = new Date(baseDate.getFullYear(), baseDate.getMonth(), baseDate.getDate());
+  const target = new Date(targetDate.getFullYear(), targetDate.getMonth(), targetDate.getDate());
+
+  // 対象日が基準日より前の場合は無効
+  if (target.getTime() < base.getTime()) {
+    return null;
+  }
+
+  switch (recurringType) {
+    case 'daily': {
+      const diffTime = target.getTime() - base.getTime();
+      const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+      if (diffDays >= 0 && diffDays % interval === 0) {
+        return targetDate;
+      }
+      break;
+    }
+
+    case 'weekly': {
+      if (target.getDay() === base.getDay()) {
+        const diffTime = target.getTime() - base.getTime();
+        const diffWeeks = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 7));
+        if (diffWeeks >= 0 && diffWeeks % interval === 0) {
+          return targetDate;
+        }
+      }
+      break;
+    }
+
+    case 'monthly': {
+      const monthsDiff = (target.getFullYear() - base.getFullYear()) * 12 + (target.getMonth() - base.getMonth());
+
+      if (monthsDiff >= 0 && monthsDiff % interval === 0) {
+        const baseDay = base.getDate();
+        const targetDay = target.getDate();
+
+        // 基準日とターゲットの日付が同じならOK
+        if (baseDay === targetDay) {
+          return targetDate;
+        }
+
+        // 月末の処理: 基準日の日付が、ターゲットの月の末日よりも大きい場合
+        // (例: base 1/31, target 2月)
+        const targetMonthEndDate = new Date(target.getFullYear(), target.getMonth() + 1, 0).getDate();
+        if (baseDay > targetMonthEndDate) {
+          // ターゲットの日付が、その月の末日であればOK
+          // (例: target 2/28 or 2/29)
+          if (targetDay === targetMonthEndDate) {
+            return targetDate;
+          }
+        }
+      }
+      break;
+    }
+
+    case 'yearly': {
+      if (target.getMonth() === base.getMonth() && target.getDate() === base.getDate()) {
+        const yearsDiff = target.getFullYear() - base.getFullYear();
+        if (yearsDiff >= 0 && yearsDiff % interval === 0) {
+          return targetDate;
+        }
+      }
+      break;
+    }
+  }
+
+  return null;
+}
+
+
+/**
+ * タスクリストから指定された年月のスケジュール付きタスクを抽出
  */
 export function extractScheduledTasks(
   tasks: Task[],
-  year: number = new Date().getFullYear(),
-  month: number = new Date().getMonth() + 1
+  year: number,
+  month: number
 ): ScheduledTask[] {
   const scheduledTasks: ScheduledTask[] = [];
+  const monthStart = new Date(year, month - 1, 1);
+  const monthEnd = new Date(year, month, 0);
 
   for (const task of tasks) {
-    let scheduledDate: Date | null = null;
-    let scheduledDay: number | null = null;
-    let isMonthly = false;
-    let isFixed = false;
-
-    // 新しいscheduledDateフィールドを優先
     if (task.scheduledDate) {
       const taskDate = new Date(task.scheduledDate);
-      scheduledDate = taskDate;
-      scheduledDay = taskDate.getDate();
-      isFixed = true;
-      // 繰り返しタスクかどうかをチェック
-      isMonthly = (task.isRecurring === true) && (task.recurringType === 'monthly');
+
+      if (task.isRecurring && task.recurringType) {
+        // 繰り返しタスク: 対象月の日をループして発生日をチェック
+        for (let day = 1; day <= monthEnd.getDate(); day++) {
+          const checkDate = new Date(year, month - 1, day);
+
+          const occurrence = calculateNextOccurrence(
+            taskDate,
+            task.recurringType,
+            task.recurringInterval || 1,
+            checkDate
+          );
+
+          if (occurrence) {
+            // 重複追加を防止
+            if (!scheduledTasks.some(t => t.id === task.id && t.scheduledDay === occurrence.getDate())) {
+              scheduledTasks.push({
+                id: task.id,
+                title: task.title,
+                category: task.category,
+                priority: task.priority,
+                energy: task.energy,
+                completed: task.completed,
+                estimatedHours: task.estimatedHours,
+                scheduledDate: occurrence,
+                scheduledDay: occurrence.getDate(),
+                isMonthly: task.recurringType === 'monthly',
+                isFixed: false,
+                notes: task.notes,
+              });
+            }
+          }
+        }
+      } else {
+        // 単発タスク: 対象月にあるかチェック
+        if (taskDate >= monthStart && taskDate <= monthEnd) {
+          scheduledTasks.push({
+            id: task.id,
+            title: task.title,
+            category: task.category,
+            priority: task.priority,
+            energy: task.energy,
+            completed: task.completed,
+            estimatedHours: task.estimatedHours,
+            scheduledDate: taskDate,
+            scheduledDay: taskDate.getDate(),
+            isMonthly: false,
+            isFixed: true,
+            notes: task.notes,
+          });
+        }
+      }
     } else {
-      // フォールバック：タイトルから日付を抽出
+      // フォールバック：タイトルから日付を抽出（毎月固定日のみ）
       const schedule = extractScheduleFromTitle(task.title);
       if (schedule.day && schedule.isMonthly) {
-        scheduledDate = new Date(year, month - 1, schedule.day);
-        scheduledDay = schedule.day;
-        isMonthly = true;
-        isFixed = true;
+        const targetDate = new Date(year, month - 1, schedule.day);
+        // その月にその日が存在する場合のみ追加
+        if (targetDate.getMonth() === month - 1) {
+            scheduledTasks.push({
+                id: task.id,
+                title: task.title,
+                category: task.category,
+                priority: task.priority,
+                energy: task.energy,
+                completed: task.completed,
+                estimatedHours: task.estimatedHours,
+                scheduledDate: targetDate,
+                scheduledDay: schedule.day,
+                isMonthly: true,
+                isFixed: true,
+                notes: task.notes,
+            });
+        }
       }
-    }
-
-    if (scheduledDate && scheduledDay) {
-      scheduledTasks.push({
-        id: task.id,
-        title: task.title,
-        category: task.category,
-        priority: task.priority,
-        energy: task.energy,
-        completed: task.completed,
-        estimatedHours: task.estimatedHours,
-        scheduledDate,
-        scheduledDay,
-        isMonthly,
-        isFixed,
-        notes: task.notes
-      });
     }
   }
 
@@ -110,16 +234,94 @@ export function getScheduledTasksForWeek(
   weekStart: Date,
   weekEnd: Date
 ): ScheduledTask[] {
-  const year = weekStart.getFullYear();
-  const month = weekStart.getMonth() + 1;
+  const scheduledTasks: ScheduledTask[] = [];
 
-  const scheduledTasks = extractScheduledTasks(tasks, year, month);
+  for (const task of tasks) {
+    if (task.scheduledDate) {
+        const taskDate = new Date(task.scheduledDate);
 
-  return scheduledTasks.filter(task => {
-    const taskDate = task.scheduledDate;
-    return taskDate >= weekStart && taskDate <= weekEnd;
-  });
+        if (task.isRecurring && task.recurringType) {
+            // 繰り返しタスク: 週の範囲内の日をループして発生をチェック
+            const currentDate = new Date(weekStart);
+            while (currentDate <= weekEnd) {
+                const occurrence = calculateNextOccurrence(
+                    taskDate,
+                    task.recurringType,
+                    task.recurringInterval || 1,
+                    currentDate
+                );
+
+                if (occurrence) {
+                    // 重複追加を防止
+                    if (!scheduledTasks.some(t => t.id === task.id && t.scheduledDate.getTime() === occurrence.getTime())) {
+                        scheduledTasks.push({
+                            id: task.id,
+                            title: task.title,
+                            category: task.category,
+                            priority: task.priority,
+                            energy: task.energy,
+                            completed: task.completed,
+                            estimatedHours: task.estimatedHours,
+                            scheduledDate: occurrence,
+                            scheduledDay: occurrence.getDate(),
+                            isMonthly: task.recurringType === 'monthly',
+                            isFixed: false,
+                            notes: task.notes,
+                        });
+                    }
+                }
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+        } else {
+            // 単発タスク
+            if (taskDate >= weekStart && taskDate <= weekEnd) {
+                scheduledTasks.push({
+                    id: task.id,
+                    title: task.title,
+                    category: task.category,
+                    priority: task.priority,
+                    energy: task.energy,
+                    completed: task.completed,
+                    estimatedHours: task.estimatedHours,
+                    scheduledDate: taskDate,
+                    scheduledDay: taskDate.getDate(),
+                    isMonthly: false,
+                    isFixed: true,
+                    notes: task.notes,
+                });
+            }
+        }
+    } else {
+        // フォールバック：タイトルから日付を抽出
+        const schedule = extractScheduleFromTitle(task.title);
+        if (schedule.day && schedule.isMonthly) {
+            const currentDate = new Date(weekStart);
+            while (currentDate <= weekEnd) {
+                if (currentDate.getDate() === schedule.day) {
+                    scheduledTasks.push({
+                        id: task.id,
+                        title: task.title,
+                        category: task.category,
+                        priority: task.priority,
+                        energy: task.energy,
+                        completed: task.completed,
+                        estimatedHours: task.estimatedHours,
+                        scheduledDate: new Date(currentDate),
+                        scheduledDay: schedule.day,
+                        isMonthly: true,
+                        isFixed: true,
+                        notes: task.notes,
+                    });
+                }
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+        }
+    }
+  }
+
+  return scheduledTasks.sort((a, b) => a.scheduledDate.getTime() - b.scheduledDate.getTime());
 }
+
 
 /**
  * 日付範囲の配列を生成

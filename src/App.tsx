@@ -9,7 +9,7 @@ const FluidBackground: React.FC = () => {
     let script = document.querySelector<HTMLScriptElement>('script[data-fluid-script="true"]')
     if (!script) {
       script = document.createElement('script')
-      script.src = `${import.meta.env.BASE_URL}fluid-simulation.js?v=4`
+      script.src = `${import.meta.env.BASE_URL}fluid-simulation.js?v=5`
       script.defer = true
       script.dataset.fluidScript = 'true'
       document.body.appendChild(script)

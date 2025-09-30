@@ -20,7 +20,7 @@ import type {
   WeeklyReflectionInput,
 } from '../../types';
 import { getWeekDateRange } from '../../utils/dateUtils';
-import { INITIAL_GOALS, INITIAL_TASKS } from '../../constants/categories';
+import { INITIAL_GOALS, generateInitialTasks } from '../../constants/categories';
 import { exportToJSON, downloadJSON } from '../../utils/exportUtils';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
 import { useWeeklyHistory, useReflectionProfile, createHistoryEntry } from '../../hooks/useWeeklyHistory';
@@ -37,7 +37,44 @@ export const Dashboard: React.FC<DashboardProps> = () => {
   const [phase] = useState(1);
   const [currentView, setCurrentView] = useState<'dashboard' | 'analytics' | 'history'>('dashboard');
   const [goals] = useLocalStorage<CategoryGoals>('strategic-todo-goals', INITIAL_GOALS);
-  const [tasks, setTasks] = useState<Task[]>(INITIAL_TASKS);
+  const [tasks, setTasks] = useState<Task[]>([]);
+
+  // 毎月のタスクの日付を動的に更新する関数
+  const updateMonthlyTaskDates = (tasks: Task[]): Task[] => {
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const currentMonth = now.getMonth() + 1;
+
+    return tasks.map(task => {
+      // 【毎月X日】パターンのタスクまたはisRecurring=trueでrecurringType=monthlyのタスクを対象
+      const monthlyMatch = task.title.match(/【毎月(\d+)日】/);
+
+      if ((monthlyMatch || (task.isRecurring && task.recurringType === 'monthly')) && task.scheduledDate) {
+        // タイトルから日付を抽出するか、scheduledDateから日付を抽出
+        let targetDay: number;
+
+        if (monthlyMatch) {
+          targetDay = parseInt(monthlyMatch[1], 10);
+        } else if (task.scheduledDate) {
+          const dateObj = new Date(task.scheduledDate);
+          targetDay = dateObj.getDate();
+        } else {
+          return task;
+        }
+
+        // 現在の年月で新しい日付を生成
+        const newDate = `${currentYear}-${currentMonth.toString().padStart(2, '0')}-${targetDay.toString().padStart(2, '0')}`;
+
+        return {
+          ...task,
+          scheduledDate: newDate,
+          updatedAt: new Date().toISOString()
+        };
+      }
+
+      return task;
+    });
+  };
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | undefined>(undefined);
   const { entries, upsertEntry, getEntry } = useWeeklyHistory();
@@ -240,13 +277,20 @@ export const Dashboard: React.FC<DashboardProps> = () => {
 
     if (savedTasks) {
       try {
-        setTasks(JSON.parse(savedTasks));
+        const parsedTasks = JSON.parse(savedTasks);
+        // 月次タスクの日付を動的に更新
+        const updatedTasks = updateMonthlyTaskDates(parsedTasks);
+        setTasks(updatedTasks);
       } catch (error) {
         console.error('Failed to load tasks for week', currentWeek, error);
-        setTasks(INITIAL_TASKS);
+        const initialTasks = generateInitialTasks();
+        const updatedInitialTasks = updateMonthlyTaskDates(initialTasks);
+        setTasks(updatedInitialTasks);
       }
     } else {
-      setTasks(INITIAL_TASKS);
+      const initialTasks = generateInitialTasks();
+      const updatedInitialTasks = updateMonthlyTaskDates(initialTasks);
+      setTasks(updatedInitialTasks);
     }
   }, [currentWeek]);
 

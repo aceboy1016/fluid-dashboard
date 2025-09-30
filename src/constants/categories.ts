@@ -248,7 +248,9 @@ export const INITIAL_GOALS: CategoryGoals = {
 };
 
 // Real tasks
-export const INITIAL_TASKS = [
+// 動的にタスクを生成する関数
+export function generateInitialTasks() {
+  return [
   {
     id: 1,
     category: 'note' as const,
@@ -953,7 +955,11 @@ export const INITIAL_TASKS = [
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString()
   }
-];
+  ];
+}
+
+// 後方互換性のための定数
+export const INITIAL_TASKS = generateInitialTasks();
 
 export const COLOR_PALETTE = {
   primary: {

@@ -435,6 +435,16 @@
   }
 
   function step(dt) {
+    // Ensure all programs are initialized before use
+    if (!curlProgram || !curlProgram.bind ||
+        !vorticityProgram || !vorticityProgram.bind ||
+        !divergenceProgram || !divergenceProgram.bind ||
+        !pressureProgram || !pressureProgram.bind ||
+        !gradienSubtractProgram || !gradienSubtractProgram.bind ||
+        !advectionProgram || !advectionProgram.bind) {
+      return;
+    }
+
     gl.disable(gl.BLEND);
     gl.viewport(0, 0, velocity.width, velocity.height);
 

@@ -39,6 +39,7 @@ export const Dashboard: React.FC<DashboardProps> = () => {
   const [goals] = useLocalStorage<CategoryGoals>('strategic-todo-goals', INITIAL_GOALS);
   const [tasks, setTasks] = useState<Task[]>(INITIAL_TASKS);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+  const [editingTask, setEditingTask] = useState<Task | undefined>(undefined);
   const { entries, upsertEntry, getEntry } = useWeeklyHistory();
   const { profile } = useReflectionProfile();
   const { generateInsight, isGenerating, error: aiError } = useAIInsights();
@@ -172,6 +173,45 @@ export const Dashboard: React.FC<DashboardProps> = () => {
       updatedAt: new Date().toISOString()
     };
     setTasks(prevTasks => [...prevTasks, newTask]);
+  };
+
+  const handleEditTask = (task: Task) => {
+    setEditingTask(task);
+    setIsTaskModalOpen(true);
+  };
+
+  const handleUpdateTask = (taskData: TaskFormData) => {
+    if (editingTask) {
+      const updatedTask: Task = {
+        ...editingTask,
+        ...taskData,
+        readingStatus: taskData.category === 'reading'
+          ? (editingTask.readingStatus || 'reading')
+          : undefined,
+        scheduledDate: taskData.scheduledDate || undefined,
+        isRecurring: taskData.isRecurring || false,
+        recurringType: taskData.recurringType || undefined,
+        recurringInterval: taskData.recurringInterval || undefined,
+        updatedAt: new Date().toISOString()
+      };
+      setTasks(prevTasks =>
+        prevTasks.map(task =>
+          task.id === editingTask.id ? updatedTask : task
+        )
+      );
+      setEditingTask(undefined);
+    } else {
+      handleAddTask(taskData);
+    }
+  };
+
+  const handleDeleteTask = (taskId: number) => {
+    setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
+  };
+
+  const handleCloseModal = () => {
+    setIsTaskModalOpen(false);
+    setEditingTask(undefined);
   };
 
   const handleTaskMove = (taskId: number, newCategory: string) => {
@@ -426,6 +466,8 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   onTaskToggle={handleTaskToggle}
                   onTaskUpdate={handleTaskUpdate}
                   onTaskAdd={() => setIsTaskModalOpen(true)}
+                  onTaskEdit={handleEditTask}
+                  onTaskDelete={handleDeleteTask}
                   onTaskMove={handleTaskMove}
                   progress={calculateCategoryProgress('note')}
                   currentWeek={currentWeek}
@@ -437,6 +479,8 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   onTaskToggle={handleTaskToggle}
                   onTaskUpdate={handleTaskUpdate}
                   onTaskAdd={() => setIsTaskModalOpen(true)}
+                  onTaskEdit={handleEditTask}
+                  onTaskDelete={handleDeleteTask}
                   onTaskMove={handleTaskMove}
                   progress={calculateCategoryProgress('standfm')}
                   currentWeek={currentWeek}
@@ -448,6 +492,8 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   onTaskToggle={handleTaskToggle}
                   onTaskUpdate={handleTaskUpdate}
                   onTaskAdd={() => setIsTaskModalOpen(true)}
+                  onTaskEdit={handleEditTask}
+                  onTaskDelete={handleDeleteTask}
                   onTaskMove={handleTaskMove}
                   progress={calculateCategoryProgress('instagram')}
                   currentWeek={currentWeek}
@@ -459,6 +505,8 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   onTaskToggle={handleTaskToggle}
                   onTaskUpdate={handleTaskUpdate}
                   onTaskAdd={() => setIsTaskModalOpen(true)}
+                  onTaskEdit={handleEditTask}
+                  onTaskDelete={handleDeleteTask}
                   onTaskMove={handleTaskMove}
                   progress={calculateCategoryProgress('youtube')}
                   currentWeek={currentWeek}
@@ -470,6 +518,8 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   onTaskToggle={handleTaskToggle}
                   onTaskUpdate={handleTaskUpdate}
                   onTaskAdd={() => setIsTaskModalOpen(true)}
+                  onTaskEdit={handleEditTask}
+                  onTaskDelete={handleDeleteTask}
                   onTaskMove={handleTaskMove}
                   progress={calculateCategoryProgress('expertise')}
                   currentWeek={currentWeek}
@@ -481,6 +531,8 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   onTaskToggle={handleTaskToggle}
                   onTaskUpdate={handleTaskUpdate}
                   onTaskAdd={() => setIsTaskModalOpen(true)}
+                  onTaskEdit={handleEditTask}
+                  onTaskDelete={handleDeleteTask}
                   onTaskMove={handleTaskMove}
                   progress={calculateCategoryProgress('marketing')}
                   currentWeek={currentWeek}
@@ -492,6 +544,8 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   onTaskToggle={handleTaskToggle}
                   onTaskUpdate={handleTaskUpdate}
                   onTaskAdd={() => setIsTaskModalOpen(true)}
+                  onTaskEdit={handleEditTask}
+                  onTaskDelete={handleDeleteTask}
                   onTaskMove={handleTaskMove}
                   progress={calculateCategoryProgress('business')}
                   currentWeek={currentWeek}
@@ -503,6 +557,8 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   onTaskToggle={handleTaskToggle}
                   onTaskUpdate={handleTaskUpdate}
                   onTaskAdd={() => setIsTaskModalOpen(true)}
+                  onTaskEdit={handleEditTask}
+                  onTaskDelete={handleDeleteTask}
                   onTaskMove={handleTaskMove}
                   progress={calculateCategoryProgress('topform')}
                   currentWeek={currentWeek}
@@ -514,6 +570,8 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   onTaskToggle={handleTaskToggle}
                   onTaskUpdate={handleTaskUpdate}
                   onTaskAdd={() => setIsTaskModalOpen(true)}
+                  onTaskEdit={handleEditTask}
+                  onTaskDelete={handleDeleteTask}
                   onTaskMove={handleTaskMove}
                   progress={calculateCategoryProgress('private')}
                   currentWeek={currentWeek}
@@ -525,6 +583,8 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   onTaskToggle={handleTaskToggle}
                   onTaskUpdate={handleTaskUpdate}
                   onTaskAdd={() => setIsTaskModalOpen(true)}
+                  onTaskEdit={handleEditTask}
+                  onTaskDelete={handleDeleteTask}
                   onTaskMove={handleTaskMove}
                   progress={calculateCategoryProgress('other')}
                   currentWeek={currentWeek}
@@ -536,6 +596,8 @@ export const Dashboard: React.FC<DashboardProps> = () => {
                   onTaskToggle={handleTaskToggle}
                   onTaskUpdate={handleTaskUpdate}
                   onTaskAdd={() => setIsTaskModalOpen(true)}
+                  onTaskEdit={handleEditTask}
+                  onTaskDelete={handleDeleteTask}
                   onTaskMove={handleTaskMove}
                   progress={calculateCategoryProgress('reading')}
                   currentWeek={currentWeek}
@@ -687,9 +749,10 @@ export const Dashboard: React.FC<DashboardProps> = () => {
       {/* Task Modal */}
       <TaskModal
         isOpen={isTaskModalOpen}
-        onClose={() => setIsTaskModalOpen(false)}
-        onSubmit={handleAddTask}
-        title="新しいタスクを追加"
+        onClose={handleCloseModal}
+        onSubmit={handleUpdateTask}
+        title={editingTask ? "タスクを編集" : "新しいタスクを追加"}
+        editingTask={editingTask}
       />
     </div>
   );

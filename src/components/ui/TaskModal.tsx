@@ -1,19 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
-import type { TaskFormData } from '../../types';
+import type { TaskFormData, Task } from '../../types';
 
 interface TaskModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSubmit: (taskData: TaskFormData) => void;
   title: string;
+  editingTask?: Task; // 編集するタスク（新規作成時はundefined）
 }
 
 export const TaskModal: React.FC<TaskModalProps> = ({
   isOpen,
   onClose,
   onSubmit,
-  title
+  title,
+  editingTask
 }) => {
   const [formData, setFormData] = useState<TaskFormData>({
     title: '',
@@ -27,6 +29,38 @@ export const TaskModal: React.FC<TaskModalProps> = ({
     recurringType: 'weekly',
     recurringInterval: 1
   });
+
+  // 編集タスクがある場合、フォームデータを設定
+  useEffect(() => {
+    if (editingTask) {
+      setFormData({
+        title: editingTask.title,
+        category: editingTask.category,
+        priority: editingTask.priority,
+        energy: editingTask.energy,
+        estimatedHours: editingTask.estimatedHours,
+        notes: editingTask.notes || '',
+        scheduledDate: editingTask.scheduledDate || '',
+        isRecurring: editingTask.isRecurring || false,
+        recurringType: editingTask.recurringType || 'weekly',
+        recurringInterval: editingTask.recurringInterval || 1
+      });
+    } else {
+      // 新規作成時はフォームをリセット
+      setFormData({
+        title: '',
+        category: 'note',
+        priority: 'B',
+        energy: 'medium',
+        estimatedHours: 1,
+        notes: '',
+        scheduledDate: '',
+        isRecurring: false,
+        recurringType: 'weekly',
+        recurringInterval: 1
+      });
+    }
+  }, [editingTask, isOpen]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

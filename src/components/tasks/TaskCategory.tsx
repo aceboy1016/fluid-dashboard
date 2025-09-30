@@ -15,6 +15,8 @@ interface TaskCategoryProps {
   onTaskUpdate: (taskId: number, updates: Partial<Task>) => void;
   onTaskAdd?: () => void;
   onTaskMove?: (taskId: number, newCategory: string) => void;
+  onTaskEdit?: (task: Task) => void;
+  onTaskDelete?: (taskId: number) => void;
   progress: number;
   currentWeek?: number;
 }
@@ -107,6 +109,8 @@ export const TaskCategory: React.FC<TaskCategoryProps> = ({
   onTaskUpdate,
   onTaskAdd,
   onTaskMove,
+  onTaskEdit,
+  onTaskDelete,
   progress,
   currentWeek = 40
 }) => {
@@ -308,6 +312,8 @@ export const TaskCategory: React.FC<TaskCategoryProps> = ({
                       task={task}
                       onToggle={onTaskToggle}
                       onUpdate={onTaskUpdate}
+                      onEdit={onTaskEdit}
+                      onDelete={onTaskDelete}
                     />
                   ))}
                 </>
@@ -354,6 +360,8 @@ export const TaskCategory: React.FC<TaskCategoryProps> = ({
                       task={task}
                       onToggle={onTaskToggle}
                       onUpdate={onTaskUpdate}
+                      onEdit={onTaskEdit}
+                      onDelete={onTaskDelete}
                     />
                   ))}
 
@@ -364,6 +372,8 @@ export const TaskCategory: React.FC<TaskCategoryProps> = ({
                       task={task}
                       onToggle={onTaskToggle}
                       onUpdate={onTaskUpdate}
+                      onEdit={onTaskEdit}
+                      onDelete={onTaskDelete}
                     />
                   ))}
 
@@ -374,6 +384,8 @@ export const TaskCategory: React.FC<TaskCategoryProps> = ({
                       task={task}
                       onToggle={onTaskToggle}
                       onUpdate={onTaskUpdate}
+                      onEdit={onTaskEdit}
+                      onDelete={onTaskDelete}
                     />
                   ))}
                 </>

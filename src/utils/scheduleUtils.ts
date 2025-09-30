@@ -42,11 +42,7 @@ export function shortenTaskTitle(title: string): string {
   let shortened = title.replace(/【毎月\d+日】/g, '');
   shortened = shortened.replace(/【[^】]*】/g, '');
 
-  // 長い場合は省略
-  if (shortened.length > 15) {
-    shortened = shortened.substring(0, 15) + '...';
-  }
-
+  // 短縮を無効化 - 元のタイトルを返す
   return shortened.trim() || title;
 }
 

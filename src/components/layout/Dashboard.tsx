@@ -45,25 +45,31 @@ export const Dashboard: React.FC<DashboardProps> = () => {
     const currentYear = now.getFullYear();
     const currentMonth = now.getMonth() + 1;
 
+    console.log('updateMonthlyTaskDates called with current date:', `${currentYear}-${currentMonth}`);
+
     return tasks.map(task => {
       // 【毎月X日】パターンのタスクまたはisRecurring=trueでrecurringType=monthlyのタスクを対象
       const monthlyMatch = task.title.match(/【毎月(\d+)日】/);
 
-      if ((monthlyMatch || (task.isRecurring && task.recurringType === 'monthly')) && task.scheduledDate) {
+      if (monthlyMatch || (task.isRecurring && task.recurringType === 'monthly')) {
         // タイトルから日付を抽出するか、scheduledDateから日付を抽出
         let targetDay: number;
 
         if (monthlyMatch) {
           targetDay = parseInt(monthlyMatch[1], 10);
+          console.log(`Found monthly task "${task.title}" with day ${targetDay}`);
         } else if (task.scheduledDate) {
           const dateObj = new Date(task.scheduledDate);
           targetDay = dateObj.getDate();
+          console.log(`Found recurring monthly task "${task.title}" with day ${targetDay}`);
         } else {
+          console.log(`Skipping task "${task.title}" - no valid date`);
           return task;
         }
 
         // 現在の年月で新しい日付を生成
         const newDate = `${currentYear}-${currentMonth.toString().padStart(2, '0')}-${targetDay.toString().padStart(2, '0')}`;
+        console.log(`Updating task "${task.title}" date from ${task.scheduledDate} to ${newDate}`);
 
         return {
           ...task,
@@ -266,6 +272,9 @@ export const Dashboard: React.FC<DashboardProps> = () => {
     const weekKey = `strategic-todo-tasks-week${currentWeek}`;
     let savedTasks = localStorage.getItem(weekKey);
 
+    // Force refresh for testing - remove after debugging
+    console.log('Loading tasks for week', currentWeek);
+
     // Migration: If week 39 data doesn't exist but v2 data exists, migrate it
     if (!savedTasks && currentWeek === 39) {
       const v2Tasks = localStorage.getItem('strategic-todo-tasks-v2');
@@ -278,18 +287,22 @@ export const Dashboard: React.FC<DashboardProps> = () => {
     if (savedTasks) {
       try {
         const parsedTasks = JSON.parse(savedTasks);
+        console.log('Loaded tasks from localStorage:', parsedTasks.filter((t: Task) => t.category === 'topform').slice(0, 2));
         // 月次タスクの日付を動的に更新
         const updatedTasks = updateMonthlyTaskDates(parsedTasks);
+        console.log('Updated monthly task dates:', updatedTasks.filter((t: Task) => t.category === 'topform').slice(0, 2));
         setTasks(updatedTasks);
       } catch (error) {
         console.error('Failed to load tasks for week', currentWeek, error);
         const initialTasks = generateInitialTasks();
         const updatedInitialTasks = updateMonthlyTaskDates(initialTasks);
+        console.log('Using initial tasks with updated dates:', updatedInitialTasks.filter((t: Task) => t.category === 'topform').slice(0, 2));
         setTasks(updatedInitialTasks);
       }
     } else {
       const initialTasks = generateInitialTasks();
       const updatedInitialTasks = updateMonthlyTaskDates(initialTasks);
+      console.log('No saved tasks, using initial tasks with updated dates:', updatedInitialTasks.filter((t: Task) => t.category === 'topform').slice(0, 2));
       setTasks(updatedInitialTasks);
     }
   }, [currentWeek]);

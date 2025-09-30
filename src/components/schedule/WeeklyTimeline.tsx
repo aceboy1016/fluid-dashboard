@@ -53,6 +53,9 @@ export const WeeklyTimeline: React.FC<WeeklyTimelineProps> = ({
         <div className="text-center py-8 text-slate-400">
           <Calendar className="h-12 w-12 mx-auto mb-3 opacity-50" />
           <p>この週にスケジュールされたタスクはありません</p>
+          <div className="text-xs mt-2 opacity-60">
+            週間範囲: {weekStart.getMonth() + 1}/{weekStart.getDate()} - {weekEnd.getMonth() + 1}/{weekEnd.getDate()}
+          </div>
         </div>
       </div>
     );
